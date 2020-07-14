@@ -2,26 +2,36 @@ import React, { useState } from "react";
 import ButtonGroup from "../components/buttonGroup";
 import Table from "../components/table";
 import { connect } from "react-redux";
+import ModuleGroup from "../components/moduleGroup";
 
 const Modules = (props) => {
   const [selectedSemester, setSelectedSemester] = useState("All");
-  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
+  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Grouped");
   const [open, setOpen] = React.useState(false);
   const [currentModule, setCurrentModule] = useState({});
 
   const getTableData = () => {
     if (selectedSemester === "Spring") {
-      console.log("called");
-      return props.modules.modules.filter((m) =>
+      return props.modules.filter((m) =>
         m.proposedSemester.some((ps) => ps.Semester_idSemester % 2 === 1)
       );
     } else if (selectedSemester === "Autumn") {
-      return props.modules.modules.filter((m) =>
+      return props.modules.filter((m) =>
         m.proposedSemester.some((ps) => ps.Semester_idSemester % 2 === 0)
       );
     } else {
-      return props.modules.modules;
+      return props.modules;
     }
+  };
+
+  const getECTS = (id) => {
+    const modules = props.modules.filter(
+      (m) => m.ModuleGroup_idModuleGroup === id
+    );
+    let ects = 0;
+    modules.map((m) => (ects += m.ECTSCredits));
+
+    return ects;
   };
 
   return (
@@ -42,20 +52,35 @@ const Modules = (props) => {
           selected={selectedDisplayStyle}
         ></ButtonGroup>
       </div>
-      <Table
-        modules={getTableData()}
-        onClick={(module) => {
-          setOpen(true);
-          setCurrentModule(module);
-        }}
-      ></Table>
+      {selectedDisplayStyle === "Listed" ? (
+        <Table
+          modules={getTableData()}
+          onClick={(module) => {
+            setOpen(true);
+            setCurrentModule(module);
+          }}
+        ></Table>
+      ) : (
+        <div style={{ marginTop: 40 }}>
+          {props.moduleGroups.map((mg) => (
+            <ModuleGroup
+              moduleGroup={mg}
+              modules={props.modules.filter(
+                (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
+              )}
+              ECTS={getECTS(mg.idModuleGroup)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    modules: state.modules,
+    modules: state.modules.modules,
+    moduleGroups: state.moduleGroups.moduleGroups,
   };
 };
 
@@ -66,7 +91,6 @@ const styles = {
     minHeight: "100vh",
     width: "80%",
     margin: "auto",
-    maxWidth: 1000,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",

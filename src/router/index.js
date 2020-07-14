@@ -17,13 +17,20 @@ import { connect } from "react-redux";
 import { fetchStudyprogrammes } from "../redux/studyprogrammes/actions";
 import { fetchModuleGroups } from "../redux/moduleGroups/actions";
 import { fetchModules } from "../redux/modules/actions";
+import { fetchLocation } from "../redux/locations/actions";
 
-const Routing = ({ fetchStudyprogrammes, fetchModuleGroups, fetchModules }) => {
+const Routing = ({
+  fetchStudyprogrammes,
+  fetchModuleGroups,
+  fetchModules,
+  fetchLocation,
+}) => {
   useEffect(() => {
     fetchStudyprogrammes();
     if (auth.getCurrentUser()) {
       fetchModuleGroups();
       fetchModules();
+      fetchLocation();
     }
   }, []);
 
@@ -51,6 +58,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
     fetchModuleGroups: () => dispatch(fetchModuleGroups(4)),
     fetchModules: () => dispatch(fetchModules(4)),
+    fetchLocation: () => dispatch(fetchLocation()),
   };
 };
 

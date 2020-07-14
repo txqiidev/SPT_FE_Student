@@ -32,15 +32,16 @@ export default BasicButtonGroup;
 const useStyles = makeStyles({
   selected: {
     fontWeight: 600,
-    backgroundColor: "#C7C7C7",
+    backgroundColor: "#E0E0E0",
     "&:hover": {
-      backgroundColor: "#C7C7C7",
+      backgroundColor: "#E0E0E0",
     },
   },
   notSelected: {
     fontWeight: 500,
+    backgroundColor: "#ffffff",
     "&:hover": {
-      backgroundColor: "#C7C7C7",
+      backgroundColor: "#E0E0E0",
     },
   },
 });

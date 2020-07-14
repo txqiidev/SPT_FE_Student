@@ -3,11 +3,13 @@ import thunk from "redux-thunk";
 import studyprogrammeReducer from "./studyprogrammes/reducer";
 import modulesReducer from "./modules/reducer";
 import moduleGroupsReducer from "./moduleGroups/reducer";
+import locationsReducer from "./locations/reducer";
 
 const rootReducer = combineReducers({
   studyprogramme: studyprogrammeReducer,
   modules: modulesReducer,
   moduleGroups: moduleGroupsReducer,
+  locations: locationsReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
