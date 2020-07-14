@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,7 +14,6 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { connect } from "react-redux";
-import { fetchStudyprogrammes } from "../redux/studyprogrammes/actions";
 import auth from "../services/auth";
 import Alert from "../components/alert";
 
@@ -30,10 +29,6 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
     message: "",
     severity: "",
   });
-
-  // useEffect(() => {
-  //   fetchStudyprogrammes();
-  // }, []);
 
   const classes = useStyles();
 
@@ -205,12 +200,6 @@ const mapStateToProps = (state) => {
     studyprogramme: state.studyprogramme,
   };
 };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
-//   };
-// };
 
 export default connect(mapStateToProps)(Registration);
 

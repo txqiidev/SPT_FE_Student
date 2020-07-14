@@ -11,6 +11,7 @@ const CustomButton = (props) => {
       variant="contained"
       color={props.color}
       onClick={(value) => props.onClick(value)}
+      style={props.style}
     >
       {props.label}
     </Button>
@@ -21,7 +22,7 @@ export default CustomButton;
 
 const useStyles = makeStyles({
   button: {
-    width: 80,
+    maxWidth: 80,
     fontWeight: 600,
     "&:hover": {
       backgroundColor: "#C7C7C7",
