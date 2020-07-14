@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,14 +6,27 @@ import {
   Redirect,
 } from "react-router-dom";
 import Login from "../pages/logIn";
+import Modules from "../pages/modules";
 import NotFound from "../pages/notFound";
 import Registration from "../pages/registration";
 import Home from "../pages/home";
 import NavBar from "../components/navbar";
 import auth from "../services/auth";
 import ProtectedRoute from "./protectedRoute";
+import { connect } from "react-redux";
+import { fetchStudyprogrammes } from "../redux/studyprogrammes/actions";
+import { fetchModuleGroups } from "../redux/moduleGroups/actions";
+import { fetchModules } from "../redux/modules/actions";
 
-const Routing = () => {
+const Routing = ({ fetchStudyprogrammes, fetchModuleGroups, fetchModules }) => {
+  useEffect(() => {
+    fetchStudyprogrammes();
+    if (auth.getCurrentUser()) {
+      fetchModuleGroups();
+      fetchModules();
+    }
+  }, []);
+
   return (
     <Router>
       <div style={styles.root}>
@@ -23,6 +36,7 @@ const Routing = () => {
             <Route path="/login" component={Login} />
             <Route path="/registration" component={Registration} />
             <Route path="/not-found" component={NotFound} />
+            <Route path="/modules" component={Modules} />
             <ProtectedRoute exact path="/" component={Home} />
             <Redirect to="/not-found" />
           </Switch>
@@ -32,7 +46,15 @@ const Routing = () => {
   );
 };
 
-export default Routing;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
+    fetchModuleGroups: () => dispatch(fetchModuleGroups(4)),
+    fetchModules: () => dispatch(fetchModules(4)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Routing);
 
 const styles = {
   root: {

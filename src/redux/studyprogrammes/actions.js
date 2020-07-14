@@ -30,7 +30,7 @@ export const fetchStudyprogrammes = () => {
   return (dispatch) => {
     dispatch(fetchStudyprogrammesRequest());
     http
-      .get(config.apiEndpoint + "admin/studyprogramme")
+      .get(config.apiEndpoint + "studyprogramme")
       .then((response) => {
         dispatch(fetchStudyprogrammesSuccess(response.data));
       })

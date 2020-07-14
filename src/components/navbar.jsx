@@ -1,8 +1,9 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import auth from "../services/auth";
+import { withRouter } from "react-router-dom";
 
-const NavBar = ({ user }) => {
+const NavBar = ({ user, history }) => {
   const onClickHandler = () => {
     console.log("übis");
   };
@@ -11,10 +12,10 @@ const NavBar = ({ user }) => {
     user && (
       <div style={styles.root}>
         <p>{user.email}</p>
-        <Button onClick={() => onClickHandler()} style={styles.buttons}>
+        <Button onClick={() => history.push("/")} style={styles.buttons}>
           Planning
         </Button>
-        <Button onClick={() => onClickHandler()} style={styles.buttons}>
+        <Button onClick={() => history.push("/modules")} style={styles.buttons}>
           Modules
         </Button>
         <Button onClick={() => onClickHandler()} style={styles.buttons}>
@@ -28,7 +29,7 @@ const NavBar = ({ user }) => {
   );
 };
 
-export default NavBar;
+export default withRouter(NavBar);
 
 const styles = {
   root: {

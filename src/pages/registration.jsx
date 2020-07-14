@@ -31,9 +31,9 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
     severity: "",
   });
 
-  useEffect(() => {
-    fetchStudyprogrammes();
-  }, []);
+  // useEffect(() => {
+  //   fetchStudyprogrammes();
+  // }, []);
 
   const classes = useStyles();
 
@@ -183,7 +183,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2" style={{ color: "darkgrey" }}>
+              <Link href="/login" variant="body2" style={{ color: "darkgrey" }}>
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -206,13 +206,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
+//   };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Registration);
+export default connect(mapStateToProps)(Registration);
 
 const useStyles = makeStyles((theme) => ({
   paper: {
