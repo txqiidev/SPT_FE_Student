@@ -1,6 +1,6 @@
 import store from "../redux/store";
 
-const getColors = () => {
+const getColors = (id) => {
   const state = store.getState();
   const modulegroups = state.moduleGroups.moduleGroups;
   const colors = [
@@ -20,7 +20,9 @@ const getColors = () => {
     modulegroupsColors[modulegroups[i].Name] = colors[i];
   }
 
-  return modulegroupsColors;
+  return modulegroupsColors[
+    modulegroups.find((mg) => mg.idModuleGroup === id).Name
+  ];
 };
 
 export default { getColors };

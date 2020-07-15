@@ -5,12 +5,21 @@ import AddIcon from "@material-ui/icons/Add";
 import { Tooltip } from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
+import color from "../services/color";
 
 const Module = (props) => {
   return (
     <div
       key={props.module.idModule}
-      style={{ ...styles.rcorners, ...{ backgroundColor: props.color } }}
+      style={{
+        ...styles.rcorners,
+        ...{
+          backgroundColor: color.getColors(
+            props.module.ModuleGroup_idModuleGroup
+          ),
+        },
+        ...props.style,
+      }}
     >
       <div style={styles.header}>
         {props.module.HasPrerequisite === 1 ? (
@@ -80,8 +89,6 @@ const styles = {
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
     width: 300,
     height: 120,
-    marginRight: 20,
-    marginBottom: 20,
   },
   header: {
     flex: 2,

@@ -37,7 +37,6 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
-    margin: "auto",
   },
   buttons: {
     fontWeight: 500,

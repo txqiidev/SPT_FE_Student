@@ -6,7 +6,7 @@ import ModuleGroup from "../components/moduleGroup";
 
 const Modules = (props) => {
   const [selectedSemester, setSelectedSemester] = useState("All");
-  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Grouped");
+  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
   const [open, setOpen] = React.useState(false);
   const [currentModule, setCurrentModule] = useState({});
 
@@ -66,10 +66,11 @@ const Modules = (props) => {
             <ModuleGroup
               key={mg.idModuleGroup}
               moduleGroup={mg}
-              modules={props.modules.filter(
+              modules={getTableData().filter(
                 (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
               )}
               ECTS={getECTS(mg.idModuleGroup)}
+              style={{ marginRight: 20, marginBottom: 20 }}
             />
           ))}
         </div>
@@ -89,7 +90,6 @@ export default connect(mapStateToProps)(Modules);
 
 const styles = {
   root: {
-    minHeight: "100vh",
     width: "80%",
     margin: "auto",
     display: "flex",

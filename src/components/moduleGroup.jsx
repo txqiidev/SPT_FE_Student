@@ -16,7 +16,7 @@ const ModuleGroup = (props) => {
           <Module
             key={module.idModule}
             module={module}
-            color={color.getColors()[props.moduleGroup.Name]}
+            style={props.style}
           ></Module>
         ))}
       </div>
