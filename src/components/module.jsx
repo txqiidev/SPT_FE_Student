@@ -8,19 +8,37 @@ import { connect } from "react-redux";
 
 const Module = (props) => {
   return (
-    <div key={props.module.idModule} style={styles.rcorners}>
+    <div
+      key={props.module.idModule}
+      style={{ ...styles.rcorners, ...{ backgroundColor: props.color } }}
+    >
       <div style={styles.header}>
-        <Tooltip
-          title={
-            <div>
-              <p style={{ fontSize: 13 }}>Module has a prerequisite module</p>
-            </div>
-          }
-          placement="top"
-          TransitionComponent={Zoom}
-        >
-          <WarningIcon />
-        </Tooltip>
+        {props.module.HasPrerequisite === 1 ? (
+          <Tooltip
+            title={
+              <div>
+                <p style={{ fontSize: 13 }}>
+                  Module has prerequisite module(s)
+                </p>
+                {props.module.prerequisiteModule.map((mp) => (
+                  <p
+                    key={mp.Module_idModule_Prerequisite}
+                    style={{ fontSize: 13 }}
+                  >
+                    - {mp.Name}
+                  </p>
+                ))}
+              </div>
+            }
+            placement="top"
+            TransitionComponent={Zoom}
+          >
+            <WarningIcon />
+          </Tooltip>
+        ) : (
+          <div />
+        )}
+
         {/* <MoreVertIcon style={{ cursor: "pointer" }} /> */}
         <div style={styles.button}>
           <AddIcon style={{ fontSize: 18 }} />
@@ -58,7 +76,7 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: "15px",
-    backgroundColor: "#FCA381",
+    // backgroundColor: "#FCA381",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
     width: 300,
     height: 120,

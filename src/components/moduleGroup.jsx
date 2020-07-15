@@ -1,5 +1,6 @@
 import React from "react";
 import Module from "./module";
+import color from "../services/color";
 
 const ModuleGroup = (props) => {
   return (
@@ -12,7 +13,11 @@ const ModuleGroup = (props) => {
       </div>
       <div style={styles.main}>
         {props.modules.map((module) => (
-          <Module module={module}></Module>
+          <Module
+            key={module.idModule}
+            module={module}
+            color={color.getColors()[props.moduleGroup.Name]}
+          ></Module>
         ))}
       </div>
     </div>

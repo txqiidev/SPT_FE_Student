@@ -64,6 +64,7 @@ const Modules = (props) => {
         <div style={{ marginTop: 40 }}>
           {props.moduleGroups.map((mg) => (
             <ModuleGroup
+              key={mg.idModuleGroup}
               moduleGroup={mg}
               modules={props.modules.filter(
                 (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup

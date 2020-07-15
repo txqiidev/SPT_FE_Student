@@ -28,7 +28,6 @@ export const fetchLocationFailure = (error) => {
 
 export const fetchLocation = () => {
   return (dispatch) => {
-    console.log("sdasdas");
     dispatch(fetchLocationRequest());
     http
       .get(config.apiEndpoint + "locations")
