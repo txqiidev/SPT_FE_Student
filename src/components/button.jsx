@@ -24,6 +24,7 @@ const useStyles = makeStyles({
   button: {
     // maxWidth: 80,
     fontWeight: 600,
+    backgroundColor: "#FFFFFF",
     "&:hover": {
       backgroundColor: "#C7C7C7",
     },

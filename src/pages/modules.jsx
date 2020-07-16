@@ -3,12 +3,19 @@ import ButtonGroup from "../components/buttonGroup";
 import Table from "../components/table";
 import { connect } from "react-redux";
 import ModuleGroup from "../components/moduleGroup";
+import { savePlan } from "../redux/user/actions";
+import Alert from "../components/alert";
 
 const Modules = (props) => {
   const [selectedSemester, setSelectedSemester] = useState("All");
   const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
   const [open, setOpen] = React.useState(false);
   const [currentModule, setCurrentModule] = useState({});
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
 
   const getTableData = () => {
     if (selectedSemester === "Spring") {
@@ -24,6 +31,10 @@ const Modules = (props) => {
     }
   };
 
+  const filterData = (data) => {
+    return data.filter((g) => !props.modulesPlaned.includes(g.idModule));
+  };
+
   const getECTS = (id) => {
     const modules = props.modules.filter(
       (m) => m.ModuleGroup_idModuleGroup === id
@@ -32,6 +43,24 @@ const Modules = (props) => {
     modules.map((m) => (ects += m.ECTSCredits));
 
     return ects;
+  };
+
+  const onClickHandler = (module) => {
+    setOpen(true);
+    setCurrentModule(module);
+    props.savePlan(props.user.email, props.idSemester, module.idModule);
+    setAlert({
+      open: true,
+      message: `${module.Name} has been added to Semester ${props.idSemester}!`,
+      severity: "success",
+    });
+  };
+
+  const handleClose = (reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlert({ ...alert, open: false });
   };
 
   return (
@@ -54,11 +83,10 @@ const Modules = (props) => {
       </div>
       {selectedDisplayStyle === "Listed" ? (
         <Table
-          modules={getTableData()}
-          onClick={(module) => {
-            setOpen(true);
-            setCurrentModule(module);
-          }}
+          modules={
+            props.modulesPlaned ? filterData(getTableData()) : getTableData()
+          }
+          onClick={(module) => onClickHandler(module)}
         ></Table>
       ) : (
         <div style={{ marginTop: 40 }}>
@@ -66,15 +94,28 @@ const Modules = (props) => {
             <ModuleGroup
               key={mg.idModuleGroup}
               moduleGroup={mg}
-              modules={getTableData().filter(
-                (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
-              )}
+              modules={
+                props.modulesPlaned
+                  ? filterData(getTableData()).filter(
+                      (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
+                    )
+                  : getTableData().filter(
+                      (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
+                    )
+              }
               ECTS={getECTS(mg.idModuleGroup)}
               style={{ marginRight: 20, marginBottom: 20 }}
+              onClick={(module) => onClickHandler(module)}
             />
           ))}
         </div>
       )}
+      <Alert
+        open={alert.open}
+        message={alert.message}
+        severity={alert.severity}
+        onClick={(reason) => handleClose(reason)}
+      ></Alert>
     </div>
   );
 };
@@ -83,14 +124,23 @@ const mapStateToProps = (state) => {
   return {
     modules: state.modules.modules,
     moduleGroups: state.moduleGroups.moduleGroups,
+    user: state.user,
   };
 };
 
-export default connect(mapStateToProps)(Modules);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    savePlan: (email, idSemester, idModule) =>
+      dispatch(savePlan(email, idSemester, idModule)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Modules);
 
 const styles = {
   root: {
     width: "80%",
+    flex: 1,
     margin: "auto",
     display: "flex",
     flexDirection: "column",

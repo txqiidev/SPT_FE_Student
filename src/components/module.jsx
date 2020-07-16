@@ -26,13 +26,13 @@ const Module = (props) => {
           <Tooltip
             title={
               <div>
-                <p style={{ fontSize: 13 }}>
+                <p style={{ fontSize: 12 }}>
                   Module has prerequisite module(s)
                 </p>
                 {props.module.prerequisiteModule.map((mp) => (
                   <p
                     key={mp.Module_idModule_Prerequisite}
-                    style={{ fontSize: 13 }}
+                    style={{ fontSize: 12 }}
                   >
                     - {mp.Name}
                   </p>
@@ -47,11 +47,16 @@ const Module = (props) => {
         ) : (
           <div />
         )}
-
         {/* <MoreVertIcon style={{ cursor: "pointer" }} /> */}
-        <div style={styles.button}>
-          <AddIcon style={{ fontSize: 18 }} />
-        </div>
+        <Tooltip
+          title={<span style={{ fontSize: 12 }}>Add to Semester</span>}
+          placement="top"
+          TransitionComponent={Zoom}
+        >
+          <div style={styles.button} onClick={props.onClick}>
+            <AddIcon style={{ fontSize: 18 }} />
+          </div>
+        </Tooltip>
       </div>
       <div style={styles.center}>
         <span>{props.module.Name}</span>
@@ -126,6 +131,9 @@ const styles = {
   },
   button: {
     backgroundColor: "#FFFFFF",
+    "&:hover": {
+      backgroundColor: "#C7C7C7",
+    },
     border: "1.5px solid #F3F3F3",
     boxSizing: "border-box",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",

@@ -1,6 +1,5 @@
 import React from "react";
 import Module from "./module";
-import color from "../services/color";
 
 const ModuleGroup = (props) => {
   return (
@@ -17,6 +16,7 @@ const ModuleGroup = (props) => {
             key={module.idModule}
             module={module}
             style={props.style}
+            onClick={() => props.onClick(module)}
           ></Module>
         ))}
       </div>

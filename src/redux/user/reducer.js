@@ -40,7 +40,6 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        plan: [],
         error: action.payload,
       };
     default:

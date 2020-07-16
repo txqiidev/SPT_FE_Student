@@ -1,8 +1,95 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Module from "../components/module";
+import Button from "../components/button";
+import AddIcon from "@material-ui/icons/Add";
+import Dialog from "@material-ui/core/Dialog";
+import ModulesPage from "../pages/modules";
+import { addSemester, deleteSemester } from "../redux/user/actions";
+import DeleteIcon from "@material-ui/icons/DeleteOutline";
+import { Tooltip } from "@material-ui/core";
+import Zoom from "@material-ui/core/Zoom";
+import DeleteDialog from "../components/deleteDialog";
+import NewSemesterDialog from "../components/newSemesterDialog";
+import Alert from "../components/alert";
 
 const Home = (props) => {
+  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [openSemester, setOpenSemester] = useState(false);
+  const [currentSemester, setCurrentSemester] = useState("");
+  const [newSemester, setNewSemester] = useState("");
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
+  const [modulesPlaned, setModulesPlaned] = useState([]);
+
+  useEffect(() => {
+    props.user.error !== "" &&
+      setAlert({
+        open: true,
+        message: props.user.error,
+        severity: "error",
+      });
+  }, [props.user.error]);
+
+  useEffect(() => {
+    props.user.plan.length > 0 &&
+      props.user.plan.forEach((p) =>
+        p.modules.map((x) =>
+          setModulesPlaned((modulesPlaned) => [
+            ...modulesPlaned,
+            x.Module_idModule,
+          ])
+        )
+      );
+  }, [props.user.plan]);
+
+  const onClickHandlerAddSemester = () => {
+    if (
+      props.user.plan.some(
+        (p) => parseInt(p.idSemester) === parseInt(newSemester)
+      )
+    ) {
+      setAlert({
+        open: true,
+        message: `Semester ${newSemester} does already exist!`,
+        severity: "error",
+      });
+    } else {
+      props.addSemester(props.user.email, newSemester);
+      if (!isNaN(newSemester)) {
+        setOpenSemester(false);
+        setAlert({
+          open: true,
+          message: `Semester ${newSemester} has been added!`,
+          severity: "success",
+        });
+      }
+    }
+  };
+
+  const onClickHandlerDeleteSemester = () => {
+    props.deleteSemester(props.user.email, currentSemester);
+    if (props.user.error === "") {
+      setOpenDelete(false);
+      setAlert({
+        open: true,
+        message: `Semester ${currentSemester} has been deleted!`,
+        severity: "success",
+      });
+    }
+  };
+
+  const handleClose = (reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlert({ ...alert, open: false });
+  };
+
   return (
     <div style={styles.root}>
       <div style={styles.header}>
@@ -12,9 +99,27 @@ const Home = (props) => {
         {props.user.plan.map((p) => (
           <div key={p.idSemester} style={styles.semester}>
             <div style={styles.semesterHeader}>
-              <span style={{ fontWeight: 600, fontSize: 16 }}>
-                Semester {p.idSemester}
-              </span>
+              <div style={styles.titlewRemove}>
+                <span
+                  style={{ fontWeight: 600, fontSize: 16, marginRight: 10 }}
+                >
+                  Semester {p.idSemester}
+                </span>
+                <Tooltip
+                  title={<span style={{ fontSize: 12 }}>Delete Semester</span>}
+                  placement="top"
+                  TransitionComponent={Zoom}
+                >
+                  <DeleteIcon
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setOpenDelete(true);
+                      setCurrentSemester(p.idSemester);
+                    }}
+                  />
+                </Tooltip>
+              </div>
+
               <span>
                 {props.modules.length > 0 &&
                   props.modules
@@ -38,9 +143,67 @@ const Home = (props) => {
                   style={{ marginBottom: 10 }}
                 ></Module>
               ))}
+            <Button
+              variant="contained"
+              color="primary"
+              label={<AddIcon style={{ fontSize: 28 }} />}
+              style={{
+                width: 300,
+                height: 120,
+                borderRadius: "15px",
+                marginBottom: 10,
+              }}
+              onClick={() => {
+                setOpen(true);
+                setCurrentSemester(p.idSemester);
+              }}
+            />
           </div>
         ))}
+        <Button
+          variant="contained"
+          color="primary"
+          label={<AddIcon style={{ fontSize: 28 }} />}
+          style={{
+            width: 320,
+            borderRadius: "15px",
+            margin: 10,
+          }}
+          onClick={() => setOpenSemester(true)}
+        />
       </div>
+      <Dialog
+        maxWidth={"lg"}
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth={true}
+      >
+        <ModulesPage
+          idSemester={currentSemester}
+          modulesPlaned={modulesPlaned}
+        ></ModulesPage>
+      </Dialog>
+      <DeleteDialog
+        open={openDelete}
+        onClose={() => setOpenDelete(false)}
+        onClick={() => onClickHandlerDeleteSemester()}
+        label="Semester"
+        deleteItem={`Semester ${currentSemester}`}
+      />
+      <NewSemesterDialog
+        open={openSemester}
+        onChange={(value) => setNewSemester(value)}
+        onClose={() => setOpenSemester(false)}
+        onClick={() => onClickHandlerAddSemester()}
+        label="Semester"
+        deleteItem={`Semester ${currentSemester}`}
+      />
+      <Alert
+        open={alert.open}
+        message={alert.message}
+        severity={alert.severity}
+        onClick={(reason) => handleClose(reason)}
+      ></Alert>
     </div>
   );
 };
@@ -53,7 +216,16 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Home);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addSemester: (email, idSemester) =>
+      dispatch(addSemester(email, idSemester)),
+    deleteSemester: (email, idSemester) =>
+      dispatch(deleteSemester(email, idSemester)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 
 const styles = {
   root: {
@@ -102,5 +274,36 @@ const styles = {
     backgroundColor: "#F8F8F8",
     marginBottom: 20,
     marginTop: 10,
+  },
+  titlewRemove: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  semesterAdd: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 320,
+    backgroundColor: "#ffffff",
+    borderRadius: 15,
+    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
+    margin: 10,
+  },
+  dialog: {
+    minHeight: "100vh",
+    backgroundColor: "#ffffff",
+    display: "flex",
+    flexDirection: "column",
+  },
+  dialogContent: {
+    width: "100%",
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 };

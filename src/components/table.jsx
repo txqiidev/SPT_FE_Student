@@ -75,7 +75,6 @@ const SimpleTable = (props) => {
                   color="primary"
                   label={<AddIcon />}
                   onClick={() => props.onClick(modules)}
-                  style={{ backgroundColor: "#FFFFFF" }}
                 />
               </TableCell>
             </TableRow>
@@ -97,6 +96,8 @@ export default connect(mapStateToProps)(SimpleTable);
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
+    width: "100%",
+
     backgroundColor: "#F8F8F8",
   },
   fontWeight: {

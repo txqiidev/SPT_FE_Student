@@ -49,3 +49,59 @@ export const fetchPlan = (id) => {
       });
   };
 };
+
+export const savePlan = (email, idSemester, idModule) => {
+  return (dispatch) => {
+    dispatch(fetchPlanRequest());
+    http
+      .post(config.apiEndpoint + "student/addToPlan", {
+        email: email,
+        idSemester: idSemester,
+        idModule: idModule,
+      })
+      .then(() => {
+        dispatch(fetchPlan(email));
+      })
+      .catch((error) => {
+        const errorMsg = error;
+        dispatch(fetchPlanFailure(errorMsg));
+      });
+  };
+};
+
+export const addSemester = (email, idSemester) => {
+  return (dispatch) => {
+    dispatch(fetchPlanRequest());
+    http
+      .post(config.apiEndpoint + "student/addSemester", {
+        email: email,
+        idSemester: idSemester,
+      })
+      .then(() => {
+        dispatch(fetchPlan(email));
+      })
+      .catch((error) => {
+        dispatch(fetchPlanFailure(error.response.data));
+      });
+  };
+};
+
+export const deleteSemester = (email, idSemester) => {
+  return (dispatch) => {
+    dispatch(fetchPlanRequest());
+    http
+      .delete(config.apiEndpoint + "student/deleteSemester", {
+        data: {
+          email: email,
+          idSemester: idSemester,
+        },
+      })
+      .then(() => {
+        dispatch(fetchPlan(email));
+      })
+      .catch((error) => {
+        const errorMsg = error;
+        dispatch(fetchPlanFailure(error.response.data));
+      });
+  };
+};
