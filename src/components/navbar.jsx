@@ -18,7 +18,10 @@ const NavBar = ({ user, history }) => {
         <Button onClick={() => history.push("/modules")} style={styles.buttons}>
           Modules
         </Button>
-        <Button onClick={() => onClickHandler()} style={styles.buttons}>
+        <Button
+          onClick={() => history.push("/studyProgress")}
+          style={styles.buttons}
+        >
           Study Progress
         </Button>
         <Button onClick={() => auth.logout()} style={styles.buttons}>

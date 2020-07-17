@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Login from "../pages/logIn";
 import Modules from "../pages/modules";
+import StudyProgress from "../pages/studyProgress";
 import NotFound from "../pages/notFound";
 import Registration from "../pages/registration";
 import Planning from "../pages/planning";
@@ -49,6 +50,7 @@ const Routing = ({
             <Route path="/registration" component={Registration} />
             <Route path="/not-found" component={NotFound} />
             <Route path="/modules" component={Modules} />
+            <Route path="/studyProgress" component={StudyProgress} />
             <ProtectedRoute exact path="/" component={Planning} />
             <Redirect to="/not-found" />
           </Switch>

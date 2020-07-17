@@ -3,6 +3,7 @@ import {
   FETCH_PLAN_FAILURE,
   FETCH_PLAN_SUCCESS,
   FETCH_PLAN_REQUEST,
+  SET_MODULES_PLANED,
 } from "./types";
 
 const initialState = {
@@ -12,7 +13,7 @@ const initialState = {
   firstname: "",
   lastname: "",
   plan: [],
-  completedModules: [],
+  modulesPlaned: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -41,6 +42,11 @@ const userReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: action.payload,
+      };
+    case SET_MODULES_PLANED:
+      return {
+        ...state,
+        modulesPlaned: action.payload,
       };
     default:
       return state;

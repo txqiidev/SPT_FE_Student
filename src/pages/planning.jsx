@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import Module from "../components/module";
-import Button from "../components/button";
 import AddIcon from "@material-ui/icons/Add";
 import Dialog from "@material-ui/core/Dialog";
-import ModulesPage from "../pages/modules";
-import { addSemester, deleteSemester } from "../redux/user/actions";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import { Tooltip } from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
+import ModulesPage from "../pages/modules";
+import Module from "../components/module";
+import Button from "../components/button";
 import DeleteDialog from "../components/deleteDialog";
 import NewSemesterDialog from "../components/newSemesterDialog";
 import Alert from "../components/alert";
+import ProgressBar from "../components/progressbar";
+import {
+  addSemester,
+  deleteSemester,
+  deleteModule,
+  hasPassed,
+} from "../redux/user/actions";
 
 const Home = (props) => {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openSemester, setOpenSemester] = useState(false);
   const [currentSemester, setCurrentSemester] = useState("");
+  const [currentModule, setCurrentModule] = useState("");
   const [newSemester, setNewSemester] = useState("");
   const [alert, setAlert] = useState({
     open: false,
@@ -25,6 +34,8 @@ const Home = (props) => {
     severity: "",
   });
   const [modulesPlaned, setModulesPlaned] = useState([]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [hasPassed, setHasPassed] = React.useState(0);
 
   useEffect(() => {
     props.user.error !== "" &&
@@ -36,12 +47,13 @@ const Home = (props) => {
   }, [props.user.error]);
 
   useEffect(() => {
+    setModulesPlaned([]);
     props.user.plan.length > 0 &&
       props.user.plan.forEach((p) =>
         p.modules.map((x) =>
           setModulesPlaned((modulesPlaned) => [
             ...modulesPlaned,
-            x.Module_idModule,
+            { idModule: x.Module_idModule, hasPassed: x.hasPassed },
           ])
         )
       );
@@ -93,73 +105,112 @@ const Home = (props) => {
   return (
     <div style={styles.root}>
       <div style={styles.header}>
-        <span>zügs und sache</span>
+        <ProgressBar
+          title={true}
+          value={props.modules
+            .filter((m) =>
+              modulesPlaned.find(
+                (module) =>
+                  m.idModule === module.idModule && module.hasPassed === 1
+              )
+            )
+            .reduce((r, a) => {
+              return r + a.ECTSCredits;
+            }, 0)}
+          total={
+            props.studyprogramme.length > 0 &&
+            props.studyprogramme.find((s) => s.idStudyProgramme === 4).Credits
+          }
+        />
       </div>
       <div style={styles.main}>
-        {props.user.plan.map((p) => (
-          <div key={p.idSemester} style={styles.semester}>
-            <div style={styles.semesterHeader}>
-              <div style={styles.titlewRemove}>
-                <span
-                  style={{ fontWeight: 600, fontSize: 16, marginRight: 10 }}
-                >
-                  Semester {p.idSemester}
-                </span>
-                <Tooltip
-                  title={<span style={{ fontSize: 12 }}>Delete Semester</span>}
-                  placement="top"
-                  TransitionComponent={Zoom}
-                >
-                  <DeleteIcon
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setOpenDelete(true);
-                      setCurrentSemester(p.idSemester);
-                    }}
-                  />
-                </Tooltip>
-              </div>
-
-              <span>
-                {props.modules.length > 0 &&
-                  props.modules
-                    .filter((m) =>
-                      p.modules.find(
-                        (module) => m.idModule === module.Module_idModule
+        {props.user.plan
+          .sort((a, b) => parseInt(a.idSemester) - parseInt(b.idSemester))
+          .map((p) => (
+            <div key={p.idSemester} style={styles.semester}>
+              <div style={styles.semesterHeader}>
+                <div style={styles.titlewRemove}>
+                  <span
+                    style={{ fontWeight: 600, fontSize: 16, marginRight: 10 }}
+                  >
+                    Semester {p.idSemester}
+                  </span>
+                  <Tooltip
+                    title={
+                      <span style={{ fontSize: 12 }}>Delete Semester</span>
+                    }
+                    placement="top"
+                    TransitionComponent={Zoom}
+                  >
+                    <DeleteIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setOpenDelete(true);
+                        setCurrentSemester(p.idSemester);
+                      }}
+                    />
+                  </Tooltip>
+                </div>
+                <span>
+                  {`${
+                    props.modules.length > 0 &&
+                    props.modules
+                      .filter((m) =>
+                        p.modules.find(
+                          (module) => m.idModule === module.Module_idModule
+                        )
                       )
-                    )
-                    .reduce((r, a) => {
-                      return r + a.ECTSCredits;
-                    }, 0)}
-              </span>
+                      .reduce((r, a) => {
+                        return r + a.ECTSCredits;
+                      }, 0)
+                  } ECTS`}
+                </span>
+              </div>
+              {props.modules.length > 0 &&
+                p.modules.map((m) => (
+                  <Module
+                    key={m.Module_idModule}
+                    module={props.modules.find(
+                      (module) => module.idModule === m.Module_idModule
+                    )}
+                    style={
+                      m.hasPassed
+                        ? {
+                            marginBottom: 10,
+                            borderStyle: "solid",
+                            borderColor: "#A4E200",
+                          }
+                        : { marginBottom: 10 }
+                    }
+                    anchorEl={anchorEl}
+                    onClickOpen={(value) => {
+                      setCurrentSemester(p.idSemester);
+                      setCurrentModule(m.Module_idModule);
+                      setAnchorEl(value);
+                      setHasPassed(m.hasPassed);
+                      console.log(hasPassed);
+                    }}
+                    hasPassed={m.hasPassed}
+                    modulesPlaned={modulesPlaned}
+                  ></Module>
+                ))}
+              <Button
+                variant="contained"
+                color="primary"
+                label={<AddIcon style={{ fontSize: 28 }} />}
+                style={{
+                  width: 300,
+                  height: 120,
+                  borderRadius: "15px",
+                  marginBottom: 10,
+                }}
+                onClick={() => {
+                  setOpen(true);
+                  setCurrentSemester(p.idSemester);
+                }}
+              />
             </div>
-            {props.modules.length > 0 &&
-              p.modules.map((m) => (
-                <Module
-                  key={m.Module_idModule}
-                  module={props.modules.find(
-                    (module) => module.idModule === m.Module_idModule
-                  )}
-                  style={{ marginBottom: 10 }}
-                ></Module>
-              ))}
-            <Button
-              variant="contained"
-              color="primary"
-              label={<AddIcon style={{ fontSize: 28 }} />}
-              style={{
-                width: 300,
-                height: 120,
-                borderRadius: "15px",
-                marginBottom: 10,
-              }}
-              onClick={() => {
-                setOpen(true);
-                setCurrentSemester(p.idSemester);
-              }}
-            />
-          </div>
-        ))}
+          ))}
         <Button
           variant="contained"
           color="primary"
@@ -204,6 +255,38 @@ const Home = (props) => {
         severity={alert.severity}
         onClick={(reason) => handleClose(reason)}
       ></Alert>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+      >
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            props.deleteModule(
+              props.user.email,
+              currentSemester,
+              currentModule
+            );
+          }}
+        >
+          DELETE
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            props.hasPassed(
+              props.user.email,
+              currentModule,
+              hasPassed === 0 ? 1 : 0
+            );
+          }}
+        >
+          {hasPassed === 0 ? "PASSED" : "UNDO PASSED"}
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
@@ -213,6 +296,7 @@ const mapStateToProps = (state) => {
     modules: state.modules.modules,
     moduleGroups: state.moduleGroups.moduleGroups,
     user: state.user,
+    studyprogramme: state.studyprogramme.studyprogramme,
   };
 };
 
@@ -222,6 +306,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addSemester(email, idSemester)),
     deleteSemester: (email, idSemester) =>
       dispatch(deleteSemester(email, idSemester)),
+    deleteModule: (email, idSemester, idModule) =>
+      dispatch(deleteModule(email, idSemester, idModule)),
+    hasPassed: (email, idModule, hp) =>
+      dispatch(hasPassed(email, idModule, hp)),
   };
 };
 
@@ -238,9 +326,9 @@ const styles = {
   },
   header: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-end",
     width: "100%",
     marginTop: 20,
     marginBottom: 20,

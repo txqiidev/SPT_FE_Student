@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ButtonGroup from "../components/buttonGroup";
 import Table from "../components/table";
 import { connect } from "react-redux";
@@ -11,11 +11,25 @@ const Modules = (props) => {
   const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
   const [open, setOpen] = React.useState(false);
   const [currentModule, setCurrentModule] = useState({});
+  const [modulesPlaned, setModulesPlaned] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     severity: "",
   });
+
+  useEffect(() => {
+    setModulesPlaned([]);
+    props.user.plan.length > 0 &&
+      props.user.plan.forEach((p) =>
+        p.modules.map((x) =>
+          setModulesPlaned((modulesPlaned) => [
+            ...modulesPlaned,
+            { idModule: x.Module_idModule, hasPassed: x.hasPassed },
+          ])
+        )
+      );
+  }, [props.user.plan]);
 
   const getTableData = () => {
     if (selectedSemester === "Spring") {
@@ -32,7 +46,9 @@ const Modules = (props) => {
   };
 
   const filterData = (data) => {
-    return data.filter((g) => !props.modulesPlaned.includes(g.idModule));
+    return data.filter(
+      (g) => !modulesPlaned.map((mp) => mp.idModule).includes(g.idModule)
+    );
   };
 
   const getECTS = (id) => {
@@ -106,6 +122,7 @@ const Modules = (props) => {
               ECTS={getECTS(mg.idModuleGroup)}
               style={{ marginRight: 20, marginBottom: 20 }}
               onClick={(module) => onClickHandler(module)}
+              modulesPlaned={modulesPlaned}
             />
           ))}
         </div>

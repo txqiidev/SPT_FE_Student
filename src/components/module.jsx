@@ -2,21 +2,41 @@ import React from "react";
 import WarningIcon from "@material-ui/icons/Warning";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddIcon from "@material-ui/icons/Add";
+import BeenhereIcon from "@material-ui/icons/Beenhere";
 import { Tooltip } from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
 import color from "../services/color";
 
 const Module = (props) => {
+  const getPrerequiteStatus = () => {
+    if (
+      props.modulesPlaned.length > 0 &&
+      props.module.prerequisiteModule.every(
+        (pm) =>
+          props.modulesPlaned.find(
+            (mp) => mp.idModule === pm.Module_idModule_Prerequisite
+          ).hasPassed === 1
+      )
+    ) {
+      console.log(props.modulesPlaned);
+
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div
       key={props.module.idModule}
       style={{
         ...styles.rcorners,
         ...{
-          backgroundColor: color.getColors(
-            props.module.ModuleGroup_idModuleGroup
-          ),
+          backgroundColor:
+            props.hasPassed === 1
+              ? "#f1f1f1"
+              : color.getColors(props.module.ModuleGroup_idModuleGroup),
         },
         ...props.style,
       }}
@@ -27,36 +47,46 @@ const Module = (props) => {
             title={
               <div>
                 <p style={{ fontSize: 12 }}>
-                  Module has prerequisite module(s)
+                  {getPrerequiteStatus()
+                    ? "You are qualified for this module!"
+                    : "Module has prerequisite module(s)!"}
                 </p>
-                {props.module.prerequisiteModule.map((mp) => (
-                  <p
-                    key={mp.Module_idModule_Prerequisite}
-                    style={{ fontSize: 12 }}
-                  >
-                    - {mp.Name}
-                  </p>
-                ))}
+                {!getPrerequiteStatus() &&
+                  props.module.prerequisiteModule.map((mp) => (
+                    <p
+                      key={mp.Module_idModule_Prerequisite}
+                      style={{ fontSize: 12 }}
+                    >
+                      - {mp.Name}
+                    </p>
+                  ))}
               </div>
             }
             placement="top"
             TransitionComponent={Zoom}
           >
-            <WarningIcon />
+            {getPrerequiteStatus() ? <BeenhereIcon /> : <WarningIcon />}
           </Tooltip>
         ) : (
           <div />
         )}
-        {/* <MoreVertIcon style={{ cursor: "pointer" }} /> */}
-        <Tooltip
-          title={<span style={{ fontSize: 12 }}>Add to Semester</span>}
-          placement="top"
-          TransitionComponent={Zoom}
-        >
-          <div style={styles.button} onClick={props.onClick}>
-            <AddIcon style={{ fontSize: 18 }} />
-          </div>
-        </Tooltip>
+
+        {props.addMode ? (
+          <Tooltip
+            title={<span style={{ fontSize: 12 }}>Add to Semester</span>}
+            placement="top"
+            TransitionComponent={Zoom}
+          >
+            <div style={styles.button} onClick={props.onClick}>
+              <AddIcon style={{ fontSize: 18 }} />
+            </div>
+          </Tooltip>
+        ) : (
+          <MoreVertIcon
+            style={{ cursor: "pointer" }}
+            onClick={(event) => props.onClickOpen(event.currentTarget)}
+          />
+        )}
       </div>
       <div style={styles.center}>
         <span>{props.module.Name}</span>
@@ -78,6 +108,7 @@ const Module = (props) => {
 const mapStateToProps = (state) => {
   return {
     locations: state.locations,
+    user: state.user,
   };
 };
 

@@ -3,6 +3,7 @@ import {
   FETCH_PLAN_SUCCESS,
   FETCH_PLAN_REQUEST,
   FETCH_PLAN_FAILURE,
+  SET_MODULES_PLANED,
 } from "./types";
 import http from "../../services/http";
 import config from "../../config.json";
@@ -32,6 +33,13 @@ export const fetchPlanFailure = (error) => {
   return {
     type: FETCH_PLAN_FAILURE,
     payload: error,
+  };
+};
+
+export const setModulesPlaned = (modulesPlaned) => {
+  return {
+    type: SET_MODULES_PLANED,
+    payload: modulesPlaned,
   };
 };
 
@@ -100,7 +108,45 @@ export const deleteSemester = (email, idSemester) => {
         dispatch(fetchPlan(email));
       })
       .catch((error) => {
-        const errorMsg = error;
+        dispatch(fetchPlanFailure(error.response.data));
+      });
+  };
+};
+
+export const deleteModule = (email, idSemester, idModule) => {
+  return (dispatch) => {
+    dispatch(fetchPlanRequest());
+    http
+      .delete(config.apiEndpoint + "student/deleteFromPlan", {
+        data: {
+          email: email,
+          idSemester: idSemester,
+          idModule: idModule,
+        },
+      })
+      .then(() => {
+        dispatch(fetchPlan(email));
+      })
+      .catch((error) => {
+        dispatch(fetchPlanFailure(error.response.data));
+      });
+  };
+};
+
+export const hasPassed = (email, idModule, hasPassed) => {
+  console.log(hasPassed);
+  return (dispatch) => {
+    dispatch(fetchPlanRequest());
+    http
+      .put(config.apiEndpoint + "student/hasPassed", {
+        email: email,
+        idModule: idModule,
+        hasPassed: hasPassed,
+      })
+      .then(() => {
+        dispatch(fetchPlan(email));
+      })
+      .catch((error) => {
         dispatch(fetchPlanFailure(error.response.data));
       });
   };
