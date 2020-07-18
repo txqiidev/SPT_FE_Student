@@ -33,7 +33,6 @@ const Home = (props) => {
     message: "",
     severity: "",
   });
-  const [modulesPlaned, setModulesPlaned] = useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hasPassed, setHasPassed] = React.useState(0);
 
@@ -45,19 +44,6 @@ const Home = (props) => {
         severity: "error",
       });
   }, [props.user.error]);
-
-  useEffect(() => {
-    setModulesPlaned([]);
-    props.user.plan.length > 0 &&
-      props.user.plan.forEach((p) =>
-        p.modules.map((x) =>
-          setModulesPlaned((modulesPlaned) => [
-            ...modulesPlaned,
-            { idModule: x.Module_idModule, hasPassed: x.hasPassed },
-          ])
-        )
-      );
-  }, [props.user.plan]);
 
   const onClickHandlerAddSemester = () => {
     if (
@@ -106,10 +92,11 @@ const Home = (props) => {
     <div style={styles.root}>
       <div style={styles.header}>
         <ProgressBar
+          barColor="#FFEA00"
           title={true}
           value={props.modules
             .filter((m) =>
-              modulesPlaned.find(
+              props.user.modulesPlaned.find(
                 (module) =>
                   m.idModule === module.idModule && module.hasPassed === 1
               )
@@ -188,10 +175,8 @@ const Home = (props) => {
                       setCurrentModule(m.Module_idModule);
                       setAnchorEl(value);
                       setHasPassed(m.hasPassed);
-                      console.log(hasPassed);
                     }}
                     hasPassed={m.hasPassed}
-                    modulesPlaned={modulesPlaned}
                   ></Module>
                 ))}
               <Button
@@ -229,10 +214,7 @@ const Home = (props) => {
         onClose={() => setOpen(false)}
         fullWidth={true}
       >
-        <ModulesPage
-          idSemester={currentSemester}
-          modulesPlaned={modulesPlaned}
-        ></ModulesPage>
+        <ModulesPage idSemester={currentSemester} planning={true}></ModulesPage>
       </Dialog>
       <DeleteDialog
         open={openDelete}

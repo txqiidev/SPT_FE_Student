@@ -134,7 +134,6 @@ export const deleteModule = (email, idSemester, idModule) => {
 };
 
 export const hasPassed = (email, idModule, hasPassed) => {
-  console.log(hasPassed);
   return (dispatch) => {
     dispatch(fetchPlanRequest());
     http

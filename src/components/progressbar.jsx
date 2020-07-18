@@ -1,21 +1,6 @@
 import React from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import LinearProgress from "@material-ui/core/LinearProgress";
-
-const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 10,
-    borderRadius: 5,
-  },
-  colorPrimary: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  },
-  bar: {
-    borderRadius: 5,
-    backgroundColor: "#FFEA00",
-  },
-}))(LinearProgress);
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +8,7 @@ const useStyles = makeStyles({
   },
   value: {
     fontWeight: 700,
-    color: "#FFEA00",
+    color: (props) => props.barColor,
   },
   titel: {
     fontWeight: 600,
@@ -31,17 +16,33 @@ const useStyles = makeStyles({
     fontSize: 12,
     marginBottom: 5,
   },
+  rootBar: {
+    height: 10,
+    borderRadius: 5,
+  },
+  colorPrimary: {
+    backgroundColor: "#F3F3F3",
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: (props) => props.barColor,
+  },
 });
 
 const ProgressBars = (props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
 
   return (
     <div className={classes.root}>
-      <p className={classes.titel}>Your Progress</p>
+      {props.title && <p className={classes.titel}>Your Progress</p>}
       <span className={classes.value}>{props.value}</span>{" "}
       <span style={{ color: "#ABABAB" }}>{` / ${props.total} ECTS`}</span>
-      <BorderLinearProgress
+      <LinearProgress
+        classes={{
+          root: classes.rootBar,
+          colorPrimary: classes.colorPrimary,
+          bar: classes.bar,
+        }}
         variant="determinate"
         value={(props.value / props.total) * 100}
       />

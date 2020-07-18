@@ -19,7 +19,7 @@ import { fetchStudyprogrammes } from "../redux/studyprogrammes/actions";
 import { fetchModuleGroups } from "../redux/moduleGroups/actions";
 import { fetchModules } from "../redux/modules/actions";
 import { fetchLocation } from "../redux/locations/actions";
-import { saveUser, fetchPlan } from "../redux/user/actions";
+import { saveUser, fetchPlan, setModulesPlaned } from "../redux/user/actions";
 
 const Routing = ({
   fetchStudyprogrammes,
@@ -28,6 +28,8 @@ const Routing = ({
   fetchLocation,
   saveUser,
   fetchPlan,
+  setModulesPlaned,
+  user,
 }) => {
   useEffect(() => {
     fetchStudyprogrammes();
@@ -39,6 +41,21 @@ const Routing = ({
       fetchLocation();
     }
   }, []);
+
+  useEffect(() => {
+    let modulesPlaned = [];
+    if (user.plan.length > 0) {
+      user.plan.forEach((p) =>
+        p.modules.map((x) =>
+          modulesPlaned.push({
+            idModule: x.Module_idModule,
+            hasPassed: x.hasPassed,
+          })
+        )
+      );
+      setModulesPlaned(modulesPlaned);
+    }
+  }, [user.plan]);
 
   return (
     <Router>
@@ -60,6 +77,12 @@ const Routing = ({
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
@@ -68,10 +91,11 @@ const mapDispatchToProps = (dispatch) => {
     fetchLocation: () => dispatch(fetchLocation()),
     saveUser: (user) => dispatch(saveUser(user)),
     fetchPlan: (email) => dispatch(fetchPlan(email)),
+    setModulesPlaned: (modules) => dispatch(setModulesPlaned(modules)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(Routing);
+export default connect(mapStateToProps, mapDispatchToProps)(Routing);
 
 const styles = {
   root: {

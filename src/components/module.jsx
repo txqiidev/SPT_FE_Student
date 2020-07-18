@@ -11,16 +11,14 @@ import color from "../services/color";
 const Module = (props) => {
   const getPrerequiteStatus = () => {
     if (
-      props.modulesPlaned.length > 0 &&
+      props.user.modulesPlaned.length > 0 &&
       props.module.prerequisiteModule.every(
         (pm) =>
-          props.modulesPlaned.find(
+          props.user.modulesPlaned.find(
             (mp) => mp.idModule === pm.Module_idModule_Prerequisite
           ).hasPassed === 1
       )
     ) {
-      console.log(props.modulesPlaned);
-
       return true;
     } else {
       return false;

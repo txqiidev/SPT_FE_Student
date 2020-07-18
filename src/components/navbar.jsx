@@ -4,10 +4,6 @@ import auth from "../services/auth";
 import { withRouter } from "react-router-dom";
 
 const NavBar = ({ user, history }) => {
-  const onClickHandler = () => {
-    console.log("übis");
-  };
-
   return (
     user && (
       <div style={styles.root}>

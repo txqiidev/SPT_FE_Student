@@ -11,25 +11,11 @@ const Modules = (props) => {
   const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
   const [open, setOpen] = React.useState(false);
   const [currentModule, setCurrentModule] = useState({});
-  const [modulesPlaned, setModulesPlaned] = useState([]);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     severity: "",
   });
-
-  useEffect(() => {
-    setModulesPlaned([]);
-    props.user.plan.length > 0 &&
-      props.user.plan.forEach((p) =>
-        p.modules.map((x) =>
-          setModulesPlaned((modulesPlaned) => [
-            ...modulesPlaned,
-            { idModule: x.Module_idModule, hasPassed: x.hasPassed },
-          ])
-        )
-      );
-  }, [props.user.plan]);
 
   const getTableData = () => {
     if (selectedSemester === "Spring") {
@@ -47,7 +33,8 @@ const Modules = (props) => {
 
   const filterData = (data) => {
     return data.filter(
-      (g) => !modulesPlaned.map((mp) => mp.idModule).includes(g.idModule)
+      (g) =>
+        !props.user.modulesPlaned.map((mp) => mp.idModule).includes(g.idModule)
     );
   };
 
@@ -99,9 +86,7 @@ const Modules = (props) => {
       </div>
       {selectedDisplayStyle === "Listed" ? (
         <Table
-          modules={
-            props.modulesPlaned ? filterData(getTableData()) : getTableData()
-          }
+          modules={props.planning ? filterData(getTableData()) : getTableData()}
           onClick={(module) => onClickHandler(module)}
         ></Table>
       ) : (
@@ -111,7 +96,7 @@ const Modules = (props) => {
               key={mg.idModuleGroup}
               moduleGroup={mg}
               modules={
-                props.modulesPlaned
+                props.planning
                   ? filterData(getTableData()).filter(
                       (m) => m.ModuleGroup_idModuleGroup === mg.idModuleGroup
                     )
@@ -122,7 +107,6 @@ const Modules = (props) => {
               ECTS={getECTS(mg.idModuleGroup)}
               style={{ marginRight: 20, marginBottom: 20 }}
               onClick={(module) => onClickHandler(module)}
-              modulesPlaned={modulesPlaned}
             />
           ))}
         </div>

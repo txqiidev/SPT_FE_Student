@@ -18,7 +18,7 @@ const ModuleGroup = (props) => {
             style={props.style}
             onClick={() => props.onClick(module)}
             addMode={true}
-            modulesPlaned={props.modulesPlaned}
+            planning={props.planning}
           ></Module>
         ))}
       </div>
