@@ -81,6 +81,35 @@ const Home = (props) => {
     }
   };
 
+  const onClickHandlerDeleteModule = () => {
+    setAnchorEl(null);
+    props.deleteModule(props.user.email, currentSemester, currentModule);
+    setAlert({
+      open: true,
+      message: `Module "${
+        props.modules.find((m) => m.idModule === currentModule).Name
+      }" has been deleted!`,
+      severity: "success",
+    });
+  };
+
+  const onClickHandlerPassModule = () => {
+    setAnchorEl(null);
+    props.hasPassed(props.user.email, currentModule, hasPassed === 0 ? 1 : 0);
+    setAlert({
+      open: true,
+      message:
+        hasPassed === 0
+          ? `Module "${
+              props.modules.find((m) => m.idModule === currentModule).Name
+            }" flagged as passed!`
+          : `Removed flag "passed" for "${
+              props.modules.find((m) => m.idModule === currentModule).Name
+            }"!`,
+      severity: "success",
+    });
+  };
+
   const handleClose = (reason) => {
     if (reason === "clickaway") {
       return;
@@ -214,7 +243,11 @@ const Home = (props) => {
         onClose={() => setOpen(false)}
         fullWidth={true}
       >
-        <ModulesPage idSemester={currentSemester} planning={true}></ModulesPage>
+        <ModulesPage
+          dialog={true}
+          idSemester={currentSemester}
+          planning={true}
+        ></ModulesPage>
       </Dialog>
       <DeleteDialog
         open={openDelete}
@@ -236,7 +269,7 @@ const Home = (props) => {
         message={alert.message}
         severity={alert.severity}
         onClick={(reason) => handleClose(reason)}
-      ></Alert>
+      />
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
@@ -244,28 +277,8 @@ const Home = (props) => {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem
-          onClick={() => {
-            setAnchorEl(null);
-            props.deleteModule(
-              props.user.email,
-              currentSemester,
-              currentModule
-            );
-          }}
-        >
-          DELETE
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setAnchorEl(null);
-            props.hasPassed(
-              props.user.email,
-              currentModule,
-              hasPassed === 0 ? 1 : 0
-            );
-          }}
-        >
+        <MenuItem onClick={() => onClickHandlerDeleteModule()}>DELETE</MenuItem>
+        <MenuItem onClick={() => onClickHandlerPassModule()}>
           {hasPassed === 0 ? "PASSED" : "UNDO PASSED"}
         </MenuItem>
       </Menu>

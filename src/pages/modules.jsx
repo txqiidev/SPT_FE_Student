@@ -77,7 +77,11 @@ const Modules = (props) => {
           selected={selectedSemester}
         ></ButtonGroup>
         <ButtonGroup
-          values={["Listed", "Grouped", "Dependencies"]}
+          values={
+            props.page
+              ? ["Listed", "Grouped", "Dependencies"]
+              : ["Listed", "Grouped"]
+          }
           onClick={(value) =>
             selectedDisplayStyle !== value && setSelectedDisplayStyle(value)
           }
@@ -88,6 +92,7 @@ const Modules = (props) => {
         <Table
           modules={props.planning ? filterData(getTableData()) : getTableData()}
           onClick={(module) => onClickHandler(module)}
+          page={props.page}
         ></Table>
       ) : (
         <div style={{ marginTop: 40 }}>
@@ -107,6 +112,8 @@ const Modules = (props) => {
               ECTS={getECTS(mg.idModuleGroup)}
               style={{ marginRight: 20, marginBottom: 20 }}
               onClick={(module) => onClickHandler(module)}
+              dialog={props.dialog}
+              page={props.page}
             />
           ))}
         </div>

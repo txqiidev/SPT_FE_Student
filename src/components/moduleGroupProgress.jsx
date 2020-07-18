@@ -7,12 +7,18 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { hasPassed } from "../redux/user/actions";
+import Alert from "./alert";
 
 const ModuleGroupProgress = (props) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hasPassed, setHasPassed] = React.useState(0);
   const [currentModule, setCurrentModule] = useState("");
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
 
   const getHasPassedValue = (module) => {
     if (
@@ -24,6 +30,30 @@ const ModuleGroupProgress = (props) => {
     } else {
       return 0;
     }
+  };
+
+  const onClickHandlerPassModule = () => {
+    setAnchorEl(null);
+    props.hasPassed(props.user.email, currentModule, hasPassed === 0 ? 1 : 0);
+    setAlert({
+      open: true,
+      message:
+        hasPassed === 0
+          ? `Module "${
+              props.modules.find((m) => m.idModule === currentModule).Name
+            }" flagged as passed!`
+          : `Removed flag "passed" for "${
+              props.modules.find((m) => m.idModule === currentModule).Name
+            }"!`,
+      severity: "success",
+    });
+  };
+
+  const handleClose = (reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setAlert({ ...alert, open: false });
   };
 
   return (
@@ -73,6 +103,12 @@ const ModuleGroupProgress = (props) => {
             ></Module>
           ))}
       </div>
+      <Alert
+        open={alert.open}
+        message={alert.message}
+        severity={alert.severity}
+        onClick={(reason) => handleClose(reason)}
+      />
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
@@ -80,16 +116,7 @@ const ModuleGroupProgress = (props) => {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem
-          onClick={() => {
-            setAnchorEl(null);
-            props.hasPassed(
-              props.user.email,
-              currentModule,
-              hasPassed === 0 ? 1 : 0
-            );
-          }}
-        >
+        <MenuItem onClick={() => onClickHandlerPassModule()}>
           {hasPassed === 0 ? "PASSED" : "UNDO PASSED"}
         </MenuItem>
       </Menu>

@@ -66,7 +66,10 @@ const Routing = ({
             <Route path="/login" component={Login} />
             <Route path="/registration" component={Registration} />
             <Route path="/not-found" component={NotFound} />
-            <Route path="/modules" component={Modules} />
+            <Route
+              path="/modules"
+              render={(props) => <Modules {...props} page={true} />}
+            />
             <Route path="/studyProgress" component={StudyProgress} />
             <ProtectedRoute exact path="/" component={Planning} />
             <Redirect to="/not-found" />

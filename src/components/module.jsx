@@ -12,14 +12,25 @@ const Module = (props) => {
   const getPrerequiteStatus = () => {
     if (
       props.user.modulesPlaned.length > 0 &&
-      props.module.prerequisiteModule.every(
-        (pm) =>
-          props.user.modulesPlaned.find(
-            (mp) => mp.idModule === pm.Module_idModule_Prerequisite
-          ).hasPassed === 1
+      props.module.prerequisiteModule.every((pm) =>
+        props.user.modulesPlaned
+          .map((mp) => mp.idModule)
+          .includes(pm.Module_idModule_Prerequisite)
       )
     ) {
-      return true;
+      if (
+        props.user.modulesPlaned.length > 0 &&
+        props.module.prerequisiteModule.every(
+          (pm) =>
+            props.user.modulesPlaned.find(
+              (mp) => mp.idModule === pm.Module_idModule_Prerequisite
+            ).hasPassed === 1
+        )
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -80,10 +91,15 @@ const Module = (props) => {
             </div>
           </Tooltip>
         ) : (
-          <MoreVertIcon
-            style={{ cursor: "pointer" }}
-            onClick={(event) => props.onClickOpen(event.currentTarget)}
-          />
+          !props.page &&
+          props.user.modulesPlaned.some(
+            (mp) => mp.idModule === props.module.idModule
+          ) && (
+            <MoreVertIcon
+              style={{ cursor: "pointer" }}
+              onClick={(event) => props.onClickOpen(event.currentTarget)}
+            />
+          )
         )}
       </div>
       <div style={styles.center}>

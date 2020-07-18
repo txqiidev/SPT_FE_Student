@@ -46,7 +46,7 @@ const SimpleTable = (props) => {
             <TableCell className={classes.fontWeight} align="center">
               Type
             </TableCell>
-            <TableCell></TableCell>
+            {!props.page && <TableCell />}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,14 +69,17 @@ const SimpleTable = (props) => {
                 {getSemester(modules.proposedSemester)}
               </TableCell>
               <TableCell align="center">{modules.ModulType}</TableCell>
-              <TableCell align="right">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  label={<AddIcon />}
-                  onClick={() => props.onClick(modules)}
-                />
-              </TableCell>
+
+              {!props.page && (
+                <TableCell align="right">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    label={<AddIcon />}
+                    onClick={() => props.onClick(modules)}
+                  />
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

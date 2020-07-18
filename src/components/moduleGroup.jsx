@@ -17,8 +17,9 @@ const ModuleGroup = (props) => {
             module={module}
             style={props.style}
             onClick={() => props.onClick(module)}
-            addMode={true}
+            addMode={props.dialog}
             planning={props.planning}
+            page={props.page}
           ></Module>
         ))}
       </div>
