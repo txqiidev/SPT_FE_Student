@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import WarningIcon from "@material-ui/icons/Warning";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import AddIcon from "@material-ui/icons/Add";
@@ -7,8 +7,10 @@ import { Tooltip } from "@material-ui/core";
 import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
 import color from "../services/color";
+import ModulesInfosDialog from "../components/moduleInfosDialog";
 
 const Module = (props) => {
+  const [openDialog, setOpenDialog] = useState(false);
   const getPrerequiteStatus = () => {
     if (
       props.user.modulesPlaned.length > 0 &&
@@ -102,7 +104,7 @@ const Module = (props) => {
           )
         )}
       </div>
-      <div style={styles.center}>
+      <div style={styles.center} onClick={() => setOpenDialog(true)}>
         <span>{props.module.Name}</span>
       </div>
       <div style={styles.footer}>
@@ -115,6 +117,13 @@ const Module = (props) => {
         </span>
         <span>{props.module.ECTSCredits}</span>
       </div>
+      <ModulesInfosDialog
+        addMode={props.addMode}
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onClick={props.onClick}
+        module={props.module}
+      />
     </div>
   );
 };
