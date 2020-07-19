@@ -166,8 +166,8 @@ const ModulesInfosDialog = ({
                     (pm) => pm.Module_idModule_Prerequisite === module.idModule
                   )
               )
-              .map((f) => (
-                <li key={f.Module_idModule_Prerequisite}>{f.Name}</li>
+              .map((f, i) => (
+                <li key={i}>{f.Name}</li>
               ))}
             <p style={styles.title}>Further</p>
             {module.Comments.split("\n").map((text, i) => (

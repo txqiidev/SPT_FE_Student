@@ -48,7 +48,6 @@ const Routing = ({
       fetchModules();
       fetchLocation();
     }
-    console.log("use3");
   }, []);
 
   useEffect(() => {
@@ -59,7 +58,6 @@ const Routing = ({
       !locations.loading
     ) {
       setLoading(false);
-      console.log("use1");
     }
   }, [user.loading, modules.loading, moduleGroups.loading, locations.loading]);
 

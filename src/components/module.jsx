@@ -117,13 +117,15 @@ const Module = (props) => {
         </span>
         <span>{props.module.ECTSCredits}</span>
       </div>
-      <ModulesInfosDialog
-        addMode={props.addMode}
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        onClick={props.onClick}
-        module={props.module}
-      />
+      {openDialog && (
+        <ModulesInfosDialog
+          addMode={props.addMode}
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onClick={props.onClick}
+          module={props.module}
+        />
+      )}
     </div>
   );
 };
