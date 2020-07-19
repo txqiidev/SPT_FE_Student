@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,6 +20,7 @@ import { fetchModuleGroups } from "../redux/moduleGroups/actions";
 import { fetchModules } from "../redux/modules/actions";
 import { fetchLocation } from "../redux/locations/actions";
 import { saveUser, fetchPlan, setModulesPlaned } from "../redux/user/actions";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const Routing = ({
   fetchStudyprogrammes,
@@ -29,18 +30,38 @@ const Routing = ({
   saveUser,
   fetchPlan,
   setModulesPlaned,
+  modules,
+  moduleGroups,
   user,
+  studyprogramme,
+  locations,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchStudyprogrammes();
     if (auth.getCurrentUser()) {
+      setLoading(true);
       saveUser(auth.getCurrentUser());
       fetchPlan(auth.getCurrentUser().email);
       fetchModuleGroups();
       fetchModules();
       fetchLocation();
     }
+    console.log("use3");
   }, []);
+
+  useEffect(() => {
+    if (
+      !user.loading &&
+      !modules.loading &&
+      !moduleGroups.loading &&
+      !locations.loading
+    ) {
+      setLoading(false);
+      console.log("use1");
+    }
+  }, [user.loading, modules.loading, moduleGroups.loading, locations.loading]);
 
   useEffect(() => {
     let modulesPlaned = [];
@@ -62,18 +83,24 @@ const Routing = ({
       <div style={styles.root}>
         <NavBar user={auth.getCurrentUser()}></NavBar>
         <div style={styles.body}>
-          <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/registration" component={Registration} />
-            <Route path="/not-found" component={NotFound} />
-            <Route
-              path="/modules"
-              render={(props) => <Modules {...props} page={true} />}
-            />
-            <Route path="/studyProgress" component={StudyProgress} />
-            <ProtectedRoute exact path="/" component={Planning} />
-            <Redirect to="/not-found" />
-          </Switch>
+          {!loading ? (
+            <Switch>
+              <Route path="/login" component={Login} />
+              <Route path="/registration" component={Registration} />
+              <Route path="/not-found" component={NotFound} />
+              <Route
+                path="/modules"
+                render={(props) => <Modules {...props} page={true} />}
+              />
+              <Route path="/studyProgress" component={StudyProgress} />
+              <ProtectedRoute exact path="/" component={Planning} />
+              <Redirect to="/not-found" />
+            </Switch>
+          ) : (
+            <div style={styles.progress}>
+              <CircularProgress color="secondary" />
+            </div>
+          )}
         </div>
       </div>
     </Router>
@@ -82,7 +109,11 @@ const Routing = ({
 
 const mapStateToProps = (state) => {
   return {
+    modules: state.modules,
+    moduleGroups: state.moduleGroups,
     user: state.user,
+    studyprogramme: state.studyprogramme,
+    locations: state.locations,
   };
 };
 
@@ -114,5 +145,12 @@ const styles = {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+  },
+  progress: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "auto",
   },
 };

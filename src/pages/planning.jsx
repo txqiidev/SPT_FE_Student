@@ -225,17 +225,20 @@ const Home = (props) => {
               />
             </div>
           ))}
-        <Button
-          variant="contained"
-          color="primary"
-          label={<AddIcon style={{ fontSize: 28 }} />}
-          style={{
-            width: 320,
-            borderRadius: "15px",
-            margin: 10,
-          }}
-          onClick={() => setOpenSemester(true)}
-        />
+        <div style={styles.semesterAdd}>
+          <Button
+            variant="contained"
+            color="primary"
+            label={<AddIcon style={{ fontSize: 28 }} />}
+            style={{
+              width: "97%",
+              flex: 1,
+              borderRadius: "15px",
+              marginTop: 2,
+            }}
+            onClick={() => setOpenSemester(true)}
+          />
+        </div>
       </div>
       <Dialog
         maxWidth={"lg"}
@@ -331,14 +334,16 @@ const styles = {
   main: {
     display: "flex",
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    flexWrap: "nowrap",
+    justifyContent: "flex-start",
     alignItems: "stretch",
-    width: "100%",
-    marginTop: 30,
+    maxWidth: "100%",
+    margin: "auto",
+    overflowX: "auto",
   },
   semester: {
     display: "flex",
+    flex: "0 0 auto",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -346,7 +351,8 @@ const styles = {
     backgroundColor: "#F8F8F8",
     borderRadius: 15,
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
-    margin: 10,
+    marginLeft: 10,
+    marginBottom: 30,
   },
   semesterHeader: {
     display: "flex",
@@ -366,14 +372,16 @@ const styles = {
   },
   semesterAdd: {
     display: "flex",
+    flex: "0 0 auto",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     width: 320,
     backgroundColor: "#ffffff",
     borderRadius: 15,
-    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
-    margin: 10,
+    minHeight: 120,
+    marginLeft: 10,
+    marginBottom: 30,
   },
   dialog: {
     minHeight: "100vh",

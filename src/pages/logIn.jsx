@@ -92,7 +92,11 @@ const SignIn = (props) => {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="#" variant="body2" style={{ color: "darkgrey" }}>
+              <Link
+                href="/registration"
+                variant="body2"
+                style={{ color: "darkgrey" }}
+              >
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

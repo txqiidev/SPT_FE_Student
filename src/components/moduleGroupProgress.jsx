@@ -10,7 +10,7 @@ import { hasPassed } from "../redux/user/actions";
 import Alert from "./alert";
 
 const ModuleGroupProgress = (props) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hasPassed, setHasPassed] = React.useState(0);
   const [currentModule, setCurrentModule] = useState("");
