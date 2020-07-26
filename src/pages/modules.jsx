@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import ButtonGroup from "../components/buttonGroup";
 import Table from "../components/table";
+import KnowledgeGraph from "../components/knowledgeGraphe";
 import { connect } from "react-redux";
 import ModuleGroup from "../components/moduleGroup";
 import { savePlan } from "../redux/user/actions";
 import Alert from "../components/alert";
+import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 
 const Modules = (props) => {
   const [selectedSemester, setSelectedSemester] = useState("All");
   const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
-  const [open, setOpen] = React.useState(false);
-  const [currentModule, setCurrentModule] = useState({});
+  const [selectedModule, setSelectedModule] = useState("All");
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -49,8 +50,6 @@ const Modules = (props) => {
   };
 
   const onClickHandler = (module) => {
-    setOpen(true);
-    setCurrentModule(module);
     props.savePlan(props.user.email, props.idSemester, module.idModule);
     setAlert({
       open: true,
@@ -69,13 +68,36 @@ const Modules = (props) => {
   return (
     <div style={styles.root}>
       <div style={styles.header}>
-        <ButtonGroup
-          values={["All", "Spring", "Autumn"]}
-          onClick={(value) =>
-            selectedSemester !== value && setSelectedSemester(value)
-          }
-          selected={selectedSemester}
-        ></ButtonGroup>
+        {selectedDisplayStyle === "Dependencies" ? (
+          <FormControl style={{ width: 400 }}>
+            <InputLabel>Module with Dependencies</InputLabel>
+            <Select
+              value={selectedModule}
+              onChange={(event) => setSelectedModule(event.target.value)}
+            >
+              <MenuItem key="All" value="All">
+                {"All"}
+              </MenuItem>
+              {props.modules.length > 0 &&
+                props.modules
+                  .filter((m) => m.HasPrerequisite === 1)
+                  .map((menuItem) => (
+                    <MenuItem key={menuItem.idModule} value={menuItem.idModule}>
+                      {menuItem.Name}
+                    </MenuItem>
+                  ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <ButtonGroup
+            values={["All", "Spring", "Autumn"]}
+            onClick={(value) =>
+              selectedSemester !== value && setSelectedSemester(value)
+            }
+            selected={selectedSemester}
+          ></ButtonGroup>
+        )}
+
         <ButtonGroup
           values={
             props.page
@@ -94,7 +116,7 @@ const Modules = (props) => {
           onClick={(module) => onClickHandler(module)}
           page={props.page}
         ></Table>
-      ) : (
+      ) : selectedDisplayStyle === "Grouped" ? (
         <div style={{ marginTop: 40 }}>
           {props.moduleGroups.map((mg) => (
             <ModuleGroup
@@ -117,6 +139,10 @@ const Modules = (props) => {
             />
           ))}
         </div>
+      ) : (
+        <KnowledgeGraph selectedModule={selectedModule}></KnowledgeGraph>
+
+        // <KnowledgeGraph></KnowledgeGraph>
       )}
       <Alert
         open={alert.open}

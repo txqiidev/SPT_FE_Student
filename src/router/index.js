@@ -44,8 +44,8 @@ const Routing = ({
       setLoading(true);
       saveUser(auth.getCurrentUser());
       fetchPlan(auth.getCurrentUser().email);
-      fetchModuleGroups();
-      fetchModules();
+      fetchModuleGroups(auth.getCurrentUser().studyprogramme);
+      fetchModules(auth.getCurrentUser().studyprogramme);
       fetchLocation();
     }
   }, []);
@@ -118,8 +118,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchStudyprogrammes: () => dispatch(fetchStudyprogrammes()),
-    fetchModuleGroups: () => dispatch(fetchModuleGroups(4)),
-    fetchModules: () => dispatch(fetchModules(4)),
+    fetchModuleGroups: (studyprogrammeID) =>
+      dispatch(fetchModuleGroups(studyprogrammeID)),
+    fetchModules: (studyprogrammeID) =>
+      dispatch(fetchModules(studyprogrammeID)),
     fetchLocation: () => dispatch(fetchLocation()),
     saveUser: (user) => dispatch(saveUser(user)),
     fetchPlan: (email) => dispatch(fetchPlan(email)),

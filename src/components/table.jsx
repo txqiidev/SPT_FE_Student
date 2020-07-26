@@ -69,7 +69,7 @@ const SimpleTable = (props) => {
               >
                 {modules.Name}
               </TableCell>
-              <TableCell align="center">
+              <TableCell onClick={() => onClickHandler(modules)} align="center">
                 {
                   props.moduleGroups.moduleGroups.find(
                     (mg) =>
