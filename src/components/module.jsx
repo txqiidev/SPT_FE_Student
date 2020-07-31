@@ -86,7 +86,9 @@ const Module = (props) => {
 
         {props.addMode ? (
           <Tooltip
-            title={<span style={{ fontSize: 12 }}>Add to Semester</span>}
+            title={
+              <span style={{ fontSize: 12 }}>{props.t("AddToSemester")}</span>
+            }
             placement="top"
             TransitionComponent={Zoom}
           >

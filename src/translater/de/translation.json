@@ -53,5 +53,6 @@
   "Cancel": "Abbrechen",
   "Qualified": "Sie sind für dieses Modul qualifiziert!",
   "NotQualified": "Modul beinhaltet vorausgesetzte(s) Modul(e)!",
-  "YourProgress": "Ihr Fortschritt"
+  "YourProgress": "Ihr Fortschritt",
+  "AddToSemester": "Zum Semester hinzufügen"
 }

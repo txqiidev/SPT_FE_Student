@@ -53,5 +53,6 @@
   "Cancel": "Cancel",
   "Qualified": "You are qualified for this module!",
   "NotQualified": "Module has prerequisite module(s)!",
-  "YourProgress": "Your Progress"
+  "YourProgress": "Your Progress",
+  "AddToSemester": "Add to Semester"
 }
