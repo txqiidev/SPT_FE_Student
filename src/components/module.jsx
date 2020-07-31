@@ -8,6 +8,8 @@ import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
 import color from "../services/color";
 import ModulesInfosDialog from "../components/moduleInfosDialog";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const Module = (props) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -59,8 +61,8 @@ const Module = (props) => {
               <div>
                 <p style={{ fontSize: 12 }}>
                   {getPrerequiteStatus()
-                    ? "You are qualified for this module!"
-                    : "Module has prerequisite module(s)!"}
+                    ? props.t("Qualified")
+                    : props.t("NotQualified")}
                 </p>
                 {!getPrerequiteStatus() &&
                   props.module.prerequisiteModule.map((mp) => (
@@ -137,7 +139,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Module);
+export default compose(withNamespaces(), connect(mapStateToProps))(Module);
 
 const styles = {
   rcorners: {

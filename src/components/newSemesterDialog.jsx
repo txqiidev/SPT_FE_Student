@@ -6,19 +6,18 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { withNamespaces } from "react-i18next";
 
 const NewSemesterDialog = (props) => {
   return (
     <Dialog open={props.open} onClose={props.onClose}>
-      <DialogTitle>{"New Semester"}</DialogTitle>
+      <DialogTitle>{props.t("NewSemester")}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {"Please enter a semester number"}
-        </DialogContentText>
+        <DialogContentText>{props.t("PleaseEnter")}</DialogContentText>
         <TextField
           autoFocus
           margin="dense"
-          label="Semester Number"
+          label={props.t("SemesterNumber")}
           color="secondary"
           fullWidth
           onChange={(event) => props.onChange(event.target.value)}
@@ -30,7 +29,7 @@ const NewSemesterDialog = (props) => {
           color="secondary"
           style={{ fontWeight: 600 }}
         >
-          Add
+          {props.t("Add")}
         </Button>
         <Button
           onClick={props.onClose}
@@ -38,11 +37,11 @@ const NewSemesterDialog = (props) => {
           style={{ fontWeight: 600 }}
           autoFocus
         >
-          Cancel
+          {props.t("Cancel")}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default NewSemesterDialog;
+export default withNamespaces()(NewSemesterDialog);

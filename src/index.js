@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import Router from "./router";
 import { MuiThemeProvider } from "@material-ui/core";
 import theme from "./theme";
+import "./translater/i18n";
 import "./index.css";
 import store from "./redux/store";
 

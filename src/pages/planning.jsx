@@ -20,6 +20,8 @@ import {
   deleteModule,
   hasPassed,
 } from "../redux/user/actions";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const Home = (props) => {
   const [open, setOpen] = useState(false);
@@ -53,7 +55,7 @@ const Home = (props) => {
     ) {
       setAlert({
         open: true,
-        message: `Semester ${newSemester} does already exist!`,
+        message: `Semester ${newSemester} ${props.t("SemAlreadyExist")}!`,
         severity: "error",
       });
     } else {
@@ -62,7 +64,7 @@ const Home = (props) => {
         setOpenSemester(false);
         setAlert({
           open: true,
-          message: `Semester ${newSemester} has been added!`,
+          message: `Semester ${newSemester} ${props.t("SemesterAdd")}!`,
           severity: "success",
         });
       }
@@ -75,7 +77,7 @@ const Home = (props) => {
       setOpenDelete(false);
       setAlert({
         open: true,
-        message: `Semester ${currentSemester} has been deleted!`,
+        message: `Semester ${currentSemester} ${props.t("SemesterDelete")}!`,
         severity: "success",
       });
     }
@@ -88,7 +90,7 @@ const Home = (props) => {
       open: true,
       message: `Module "${
         props.modules.find((m) => m.idModule === currentModule).Name
-      }" has been deleted!`,
+      }" ${props.t("ModuleDelete")}!`,
       severity: "success",
     });
   };
@@ -102,8 +104,8 @@ const Home = (props) => {
         hasPassed === 0
           ? `Module "${
               props.modules.find((m) => m.idModule === currentModule).Name
-            }" flagged as passed!`
-          : `Removed flag "passed" for "${
+            }" ${props.t("Flagged")}!`
+          : `${props.t("Unflagg")} "${
               props.modules.find((m) => m.idModule === currentModule).Name
             }"!`,
       severity: "success",
@@ -153,7 +155,9 @@ const Home = (props) => {
                   </span>
                   <Tooltip
                     title={
-                      <span style={{ fontSize: 12 }}>Delete Semester</span>
+                      <span style={{ fontSize: 12 }}>
+                        {props.t("DeleteSemester")}
+                      </span>
                     }
                     placement="top"
                     TransitionComponent={Zoom}
@@ -280,9 +284,11 @@ const Home = (props) => {
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        <MenuItem onClick={() => onClickHandlerDeleteModule()}>DELETE</MenuItem>
+        <MenuItem onClick={() => onClickHandlerDeleteModule()}>
+          {props.t("Delete")}
+        </MenuItem>
         <MenuItem onClick={() => onClickHandlerPassModule()}>
-          {hasPassed === 0 ? "PASSED" : "UNDO PASSED"}
+          {hasPassed === 0 ? props.t("Passed") : props.t("UndoPassed")}
         </MenuItem>
       </Menu>
     </div>
@@ -311,7 +317,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default compose(
+  withNamespaces(),
+
+  connect(mapStateToProps, mapDispatchToProps)
+)(Home);
 
 const styles = {
   root: {

@@ -11,6 +11,8 @@ import Button from "./button";
 import AddIcon from "@material-ui/icons/Add";
 import { connect } from "react-redux";
 import ModulesInfosDialog from "../components/moduleInfosDialog";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const SimpleTable = (props) => {
   const { modules } = props;
@@ -25,12 +27,12 @@ const SimpleTable = (props) => {
     const autumn = array.some((a) => a.Semester_idSemester % 2 === 0);
 
     if (spring && autumn) {
-      return "Spring & Autumn";
+      return `${props.t("Spring")} & ${props.t("Autumn")}`;
     } else if (spring) {
-      return "Spring";
+      return props.t("Spring");
     } else if (autumn) {
     }
-    return "Autumn";
+    return props.t("Autumn");
   };
 
   const onClickHandler = (modules) => {
@@ -45,7 +47,7 @@ const SimpleTable = (props) => {
           <TableRow>
             <TableCell className={classes.fontWeight}>Name</TableCell>
             <TableCell className={classes.fontWeight} align="center">
-              Module Group
+              {props.t("ModuleGroup")}
             </TableCell>
             <TableCell className={classes.fontWeight} align="center">
               ECTS
@@ -54,7 +56,7 @@ const SimpleTable = (props) => {
               Semester
             </TableCell>
             <TableCell className={classes.fontWeight} align="center">
-              Type
+              {props.t("Type")}
             </TableCell>
             {!props.page && <TableCell />}
           </TableRow>
@@ -123,7 +125,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(SimpleTable);
+export default compose(withNamespaces(), connect(mapStateToProps))(SimpleTable);
 
 const useStyles = makeStyles({
   table: {

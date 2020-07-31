@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import { withNamespaces } from "react-i18next";
 
 const useStyles = makeStyles({
   root: {
@@ -34,7 +35,9 @@ const ProgressBars = (props) => {
 
   return (
     <div className={classes.root}>
-      {props.title && <p className={classes.titel}>Your Progress</p>}
+      {props.title && (
+        <p className={classes.titel}>{props.t("YourProgress")}</p>
+      )}
       <span className={classes.value}>{props.value}</span>{" "}
       <span style={{ color: "#ABABAB" }}>{` / ${props.total} ECTS`}</span>
       <LinearProgress
@@ -50,4 +53,4 @@ const ProgressBars = (props) => {
   );
 };
 
-export default ProgressBars;
+export default withNamespaces()(ProgressBars);

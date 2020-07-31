@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Graph from "react-graph-vis";
 import { connect } from "react-redux";
 import color from "../services/color";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const KnowledgeGraph = (props) => {
   const getGraphAll = () => {
@@ -64,7 +66,7 @@ const KnowledgeGraph = (props) => {
       edges.push({
         from: pm.Module_idModule_Prerequisite,
         to: module.idModule,
-        label: "Prerequisite",
+        label: props.t("Pre"),
       });
     });
 
@@ -86,7 +88,7 @@ const KnowledgeGraph = (props) => {
         edges.push({
           from: props.selectedModule,
           to: mf.idModule,
-          label: "Follow-up",
+          label: props.t("FollUp"),
         });
       });
 
@@ -147,4 +149,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(KnowledgeGraph);
+export default compose(
+  withNamespaces(),
+  connect(mapStateToProps)
+)(KnowledgeGraph);

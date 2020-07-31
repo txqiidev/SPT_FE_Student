@@ -8,6 +8,8 @@ import { connect } from "react-redux";
 import ReactHtmlParser from "react-html-parser";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "./button";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const ModulesInfosDialog = ({
   module,
@@ -19,6 +21,7 @@ const ModulesInfosDialog = ({
   locations,
   modules,
   addMode,
+  t,
 }) => {
   const formatContent = (content) => {
     return content.split("\n").map((line, i) =>
@@ -45,7 +48,7 @@ const ModulesInfosDialog = ({
                   <td>{module.ECTSCredits}</td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Study Programme:</td>
+                  <td style={styles.td}>{t("StudyProgramme")}:</td>
                   <td>
                     {
                       studyprogramme.find(
@@ -57,7 +60,7 @@ const ModulesInfosDialog = ({
                   </td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Module Group:</td>
+                  <td style={styles.td}>{t("ModuleGroup")}:</td>
                   <td>
                     {
                       moduleGroups.find(
@@ -68,7 +71,7 @@ const ModulesInfosDialog = ({
                   </td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Location:</td>
+                  <td style={styles.td}>{t("Location")}:</td>
                   <td>
                     {
                       locations.find(
@@ -78,11 +81,11 @@ const ModulesInfosDialog = ({
                   </td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Language:</td>
+                  <td style={styles.td}>{t("Language")}:</td>
                   <td>{module.Language}</td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Academic Year:</td>
+                  <td style={styles.td}>{t("AcademicYear")}:</td>
                   <td>{module.Year}</td>
                 </tr>
                 <tr>
@@ -90,16 +93,16 @@ const ModulesInfosDialog = ({
                   <td>{module.Level}</td>
                 </tr>
                 <tr>
-                  <td style={styles.td}>Type: </td>
+                  <td style={styles.td}>{t("Type")}: </td>
                   <td>{module.ModulType}</td>
                 </tr>
               </tbody>
             </table>
-            <p style={styles.title}>Guiding Principle</p>
+            <p style={styles.title}>{t("GuidingPrinciple")}</p>
             {module.GuidingPrinciple.split("\n").map((text, i) => (
               <span key={i}>{ReactHtmlParser(text)}</span>
             ))}
-            <p style={styles.title}>Assessment</p>
+            <p style={styles.title}>{t("Assessment")}</p>
             <table style={{ borderCollapse: "collapse", width: "100%" }}>
               <tbody>
                 <tr style={styles.tr}>
@@ -144,20 +147,20 @@ const ModulesInfosDialog = ({
                 </tr>
               </tbody>
             </table>
-            <p style={styles.title}>Assessments and other Comments</p>
+            <p style={styles.title}>{t("AssessmentsComments")}</p>
             {module.AssessmentComment.split("\n").map((text, i) => (
               <span key={i}>{ReactHtmlParser(text)}</span>
             ))}
           </div>
           <div style={{ ...styles.half, ...{ marginLeft: 15 } }}>
-            <p style={styles.title}>Content</p>
+            <p style={styles.title}>{t("Content")}</p>
             {formatContent(module.Content)}
-            <p style={styles.title}>Prerequisite Module(s)</p>
+            <p style={styles.title}>{t("Prerequisite")}</p>
             {module.HasPrerequisite === 1 &&
               module.prerequisiteModule.map((pm) => (
                 <li key={pm.Module_idModule_Prerequisite}>{pm.Name}</li>
               ))}
-            <p style={styles.title}>Follow-up Modules</p>
+            <p style={styles.title}>{t("Follow")}</p>
             {modules
               .filter(
                 (m) =>
@@ -169,7 +172,7 @@ const ModulesInfosDialog = ({
               .map((f, i) => (
                 <li key={i}>{f.Name}</li>
               ))}
-            <p style={styles.title}>Further</p>
+            <p style={styles.title}>{t("Further")}</p>
             {module.Comments.split("\n").map((text, i) => (
               <span key={i}>{text}</span>
             ))}
@@ -177,7 +180,7 @@ const ModulesInfosDialog = ({
               <Button
                 variant="contained"
                 color="primary"
-                label="MORE INFORMATION"
+                label={t("More")}
                 style={{
                   ...styles.button,
                   ...{
@@ -213,7 +216,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ModulesInfosDialog);
+export default compose(
+  withNamespaces(),
+  connect(mapStateToProps)
+)(ModulesInfosDialog);
 
 const styles = {
   root: {

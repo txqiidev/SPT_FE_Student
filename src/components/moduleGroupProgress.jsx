@@ -8,6 +8,8 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { hasPassed } from "../redux/user/actions";
 import Alert from "./alert";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const ModuleGroupProgress = (props) => {
   const [open, setOpen] = useState(false);
@@ -41,8 +43,8 @@ const ModuleGroupProgress = (props) => {
         hasPassed === 0
           ? `Module "${
               props.modules.find((m) => m.idModule === currentModule).Name
-            }" flagged as passed!`
-          : `Removed flag "passed" for "${
+            }" ${props.t("Flagged")}!`
+          : `${props.t("Unflagg")} "${
               props.modules.find((m) => m.idModule === currentModule).Name
             }"!`,
       severity: "success",
@@ -117,7 +119,7 @@ const ModuleGroupProgress = (props) => {
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem onClick={() => onClickHandlerPassModule()}>
-          {hasPassed === 0 ? "PASSED" : "UNDO PASSED"}
+          {hasPassed === 0 ? props.t("Passed") : props.t("UndoPassed")}
         </MenuItem>
       </Menu>
     </div>
@@ -137,9 +139,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  withNamespaces(),
+  connect(mapStateToProps, mapDispatchToProps)
 )(ModuleGroupProgress);
 
 const styles = {

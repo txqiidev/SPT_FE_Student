@@ -7,10 +7,14 @@ import ModuleGroup from "../components/moduleGroup";
 import { savePlan } from "../redux/user/actions";
 import Alert from "../components/alert";
 import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import { compose } from "redux";
+import { withNamespaces } from "react-i18next";
 
 const Modules = (props) => {
-  const [selectedSemester, setSelectedSemester] = useState("All");
-  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState("Listed");
+  const [selectedSemester, setSelectedSemester] = useState(props.t("All"));
+  const [selectedDisplayStyle, setSelectedDisplayStyle] = useState(
+    props.t("Listed")
+  );
   const [selectedModule, setSelectedModule] = useState("All");
   const [alert, setAlert] = useState({
     open: false,
@@ -18,12 +22,17 @@ const Modules = (props) => {
     severity: "",
   });
 
+  useEffect(() => {
+    setSelectedSemester(props.t("All"));
+    setSelectedDisplayStyle(props.t("Listed"));
+  }, [props.i18n.language]);
+
   const getTableData = () => {
-    if (selectedSemester === "Spring") {
+    if (selectedSemester === props.t("Spring")) {
       return props.modules.filter((m) =>
         m.proposedSemester.some((ps) => ps.Semester_idSemester % 2 === 1)
       );
-    } else if (selectedSemester === "Autumn") {
+    } else if (selectedSemester === props.t("Autumn")) {
       return props.modules.filter((m) =>
         m.proposedSemester.some((ps) => ps.Semester_idSemester % 2 === 0)
       );
@@ -53,7 +62,7 @@ const Modules = (props) => {
     props.savePlan(props.user.email, props.idSemester, module.idModule);
     setAlert({
       open: true,
-      message: `${module.Name} has been added to Semester ${props.idSemester}!`,
+      message: `${module.Name} ${props.t("ModuleAdded")} ${props.idSemester}!`,
       severity: "success",
     });
   };
@@ -68,15 +77,15 @@ const Modules = (props) => {
   return (
     <div style={styles.root}>
       <div style={styles.header}>
-        {selectedDisplayStyle === "Dependencies" ? (
+        {selectedDisplayStyle === props.t("Dependencies") ? (
           <FormControl style={{ width: 400 }}>
-            <InputLabel>Module with Dependencies</InputLabel>
+            <InputLabel>{props.t("MWD")}</InputLabel>
             <Select
               value={selectedModule}
               onChange={(event) => setSelectedModule(event.target.value)}
             >
-              <MenuItem key="All" value="All">
-                {"All"}
+              <MenuItem key="All" value={"All"}>
+                {props.t("All")}
               </MenuItem>
               {props.modules.length > 0 &&
                 props.modules
@@ -90,19 +99,18 @@ const Modules = (props) => {
           </FormControl>
         ) : (
           <ButtonGroup
-            values={["All", "Spring", "Autumn"]}
+            values={[props.t("All"), props.t("Spring"), props.t("Autumn")]}
             onClick={(value) =>
               selectedSemester !== value && setSelectedSemester(value)
             }
             selected={selectedSemester}
           ></ButtonGroup>
         )}
-
         <ButtonGroup
           values={
             props.page
-              ? ["Listed", "Grouped", "Dependencies"]
-              : ["Listed", "Grouped"]
+              ? [props.t("Listed"), props.t("Grouped"), props.t("Dependencies")]
+              : [props.t("Listed"), props.t("Grouped")]
           }
           onClick={(value) =>
             selectedDisplayStyle !== value && setSelectedDisplayStyle(value)
@@ -110,13 +118,13 @@ const Modules = (props) => {
           selected={selectedDisplayStyle}
         ></ButtonGroup>
       </div>
-      {selectedDisplayStyle === "Listed" ? (
+      {selectedDisplayStyle === props.t("Listed") ? (
         <Table
           modules={props.planning ? filterData(getTableData()) : getTableData()}
           onClick={(module) => onClickHandler(module)}
           page={props.page}
         ></Table>
-      ) : selectedDisplayStyle === "Grouped" ? (
+      ) : selectedDisplayStyle === props.t("Grouped") ? (
         <div style={{ marginTop: 40 }}>
           {props.moduleGroups.map((mg) => (
             <ModuleGroup
@@ -140,9 +148,11 @@ const Modules = (props) => {
           ))}
         </div>
       ) : (
-        <KnowledgeGraph selectedModule={selectedModule}></KnowledgeGraph>
+        selectedDisplayStyle === props.t("Dependencies") && (
+          <KnowledgeGraph selectedModule={selectedModule}></KnowledgeGraph>
 
-        // <KnowledgeGraph></KnowledgeGraph>
+          // <KnowledgeGraph></KnowledgeGraph>
+        )
       )}
       <Alert
         open={alert.open}
@@ -169,7 +179,10 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Modules);
+export default compose(
+  withNamespaces(),
+  connect(mapStateToProps, mapDispatchToProps)
+)(Modules);
 
 const styles = {
   root: {

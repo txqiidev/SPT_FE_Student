@@ -16,8 +16,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { connect } from "react-redux";
 import auth from "../services/auth";
 import Alert from "../components/alert";
+import { withNamespaces } from "react-i18next";
+import { compose } from "redux";
 
-const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
+const Registration = ({ studyprogramme, t }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [lastname, setLastname] = useState("");
@@ -69,7 +71,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          {t("SignUp")}
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -81,7 +83,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
                 required
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label={t("FirstName")}
                 autoFocus
                 onChange={(event) => setFirstname(event.target.value)}
                 color="secondary"
@@ -93,7 +95,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
                 required
                 fullWidth
                 id="lastName"
-                label="Last Name"
+                label={t("LastName")}
                 name="lastName"
                 autoComplete="lname"
                 onChange={(event) => setLastname(event.target.value)}
@@ -106,7 +108,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label={t("EmailAddress")}
                 name="email"
                 autoComplete="email"
                 onChange={(event) => setEmail(event.target.value)}
@@ -119,7 +121,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label={t("Password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -133,7 +135,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
                 required
                 fullWidth
                 id="year"
-                label="Study Year"
+                label={t("Curriculum")}
                 name="year"
                 autoComplete="year"
                 onChange={(event) => setYear(event.target.value)}
@@ -143,7 +145,7 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
             <Grid item xs={12}>
               <FormControl className={classes.formControl}>
                 <InputLabel id="simple-select-label">
-                  Study Programme
+                  {t("StudyProgramme")}
                 </InputLabel>
                 <Select
                   labelId="simple-select-label"
@@ -174,12 +176,12 @@ const Registration = ({ fetchStudyprogrammes, studyprogramme }) => {
             className={classes.submit}
             onClick={() => doSubmit()}
           >
-            Sign Up
+            {t("SignUp")}
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
               <Link href="/login" variant="body2" style={{ color: "darkgrey" }}>
-                Already have an account? Sign in
+                {t("HaveAccount")}
               </Link>
             </Grid>
           </Grid>
@@ -201,7 +203,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Registration);
+export default compose(
+  withNamespaces(),
+  connect(mapStateToProps)
+)(Registration);
 
 const useStyles = makeStyles((theme) => ({
   paper: {
