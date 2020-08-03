@@ -60,7 +60,7 @@ const Home = (props) => {
       });
     } else {
       props.addSemester(props.user.email, newSemester);
-      if (!isNaN(newSemester)) {
+      if (!isNaN(newSemester) && newSemester <= 12) {
         setOpenSemester(false);
         setAlert({
           open: true,
