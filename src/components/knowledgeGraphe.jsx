@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Graph from "react-graph-vis";
 import { connect } from "react-redux";
 import color from "../services/color";

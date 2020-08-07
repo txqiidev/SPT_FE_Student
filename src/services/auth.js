@@ -21,7 +21,6 @@ const register = async (
     studyprogramme: studyprogramme,
     isAdmin: 0,
   });
-  console.log("registration", data);
   localStorage.setItem(tokenKey, data);
 };
 
@@ -30,8 +29,6 @@ const login = async (email, password) => {
     email,
     password,
   });
-  console.log("login", data);
-
   localStorage.setItem(tokenKey, data);
 };
 

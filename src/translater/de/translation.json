@@ -54,5 +54,10 @@
   "Qualified": "Sie sind für dieses Modul qualifiziert!",
   "NotQualified": "Modul beinhaltet vorausgesetzte(s) Modul(e)!",
   "YourProgress": "Ihr Fortschritt",
-  "AddToSemester": "Zum Semester hinzufügen"
+  "AddToSemester": "Zum Semester hinzufügen",
+  "StartPlanning": "Beginnen Sie mit der Planung Ihres Semesters!",
+  "HowToPlan": "Wie möchten Sie Ihr Studium planen?",
+  "Fulltime": "Vollzeit Vorlage",
+  "Parttime": "Teilzeit Vorlage",
+  "Scratch": "Individuell"
 }

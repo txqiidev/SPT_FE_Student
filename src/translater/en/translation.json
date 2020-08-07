@@ -54,5 +54,10 @@
   "Qualified": "You are qualified for this module!",
   "NotQualified": "Module has prerequisite module(s)!",
   "YourProgress": "Your Progress",
-  "AddToSemester": "Add to Semester"
+  "AddToSemester": "Add to Semester",
+  "StartPlanning": "Start Planning Your Semester!",
+  "HowToPlan": "How do you want to plan your studies?",
+  "Fulltime": "Full-Time Template",
+  "Parttime": "Part-Time Template",
+  "Scratch": "Individually"
 }

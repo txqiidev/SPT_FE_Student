@@ -11,6 +11,7 @@ import ModulesPage from "../pages/modules";
 import Module from "../components/module";
 import Button from "../components/button";
 import DeleteDialog from "../components/deleteDialog";
+import InitialDialog from "../components/initialDialog";
 import NewSemesterDialog from "../components/newSemesterDialog";
 import Alert from "../components/alert";
 import ProgressBar from "../components/progressbar";
@@ -20,12 +21,14 @@ import {
   deleteModule,
   hasPassed,
 } from "../redux/user/actions";
+import { savePlan } from "../redux/user/actions";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 
 const Home = (props) => {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openInitial, setOpenInitial] = useState(false);
   const [openSemester, setOpenSemester] = useState(false);
   const [currentSemester, setCurrentSemester] = useState("");
   const [currentModule, setCurrentModule] = useState("");
@@ -37,6 +40,12 @@ const Home = (props) => {
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hasPassed, setHasPassed] = React.useState(0);
+
+  useEffect(() => {
+    if (!props.user.loading && props.user.plan.length === 0) {
+      setOpenInitial(true);
+    }
+  }, []);
 
   useEffect(() => {
     props.user.error !== "" &&
@@ -69,6 +78,21 @@ const Home = (props) => {
         });
       }
     }
+  };
+
+  const onClickHandlerInitial = (value) => {
+    if (value !== 3) {
+      props.modules.forEach((m) => {
+        props.savePlan(
+          props.user.email,
+          m.proposedSemester
+            .find((ps) => ps.Mode === (value === 1 ? "FT" : "PT"))
+            .Semester_idSemester.toString(),
+          m.idModule
+        );
+      });
+    }
+    setOpenInitial(false);
   };
 
   const onClickHandlerDeleteSemester = () => {
@@ -263,6 +287,13 @@ const Home = (props) => {
         label="Semester"
         deleteItem={`Semester ${currentSemester}`}
       />
+      <InitialDialog
+        open={openInitial}
+        onClose={() => setOpenInitial(false)}
+        onClick={(value) => onClickHandlerInitial(value)}
+        label={props.t("StartPlanning")}
+        text={props.t("HowToPlan")}
+      />
       <NewSemesterDialog
         open={openSemester}
         onChange={(value) => setNewSemester(value)}
@@ -314,6 +345,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(deleteModule(email, idSemester, idModule)),
     hasPassed: (email, idModule, hp) =>
       dispatch(hasPassed(email, idModule, hp)),
+    savePlan: (email, idSemester, idModule) =>
+      dispatch(savePlan(email, idSemester, idModule)),
   };
 };
 

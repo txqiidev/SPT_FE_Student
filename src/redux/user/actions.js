@@ -9,7 +9,6 @@ import http from "../../services/http";
 import config from "../../config.json";
 
 export const saveUser = (user) => {
-  console.log("action", user);
   return {
     type: SAVE_USER,
     payload: user,
