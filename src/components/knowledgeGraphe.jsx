@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 
 const KnowledgeGraph = (props) => {
+  // Assembles the graph, by defining the nodes (modules) and edges (relationships)
   const getGraphAll = () => {
     var nodes = [];
     var edges = [];
@@ -40,6 +41,7 @@ const KnowledgeGraph = (props) => {
     return { nodes: nodes, edges: edges };
   };
 
+  // Assembles graph related to one module
   const getGraphModule = () => {
     var module = props.modules.find((m) => m.idModule === props.selectedModule);
 

@@ -13,6 +13,7 @@ import { withNamespaces } from "react-i18next";
 
 const Module = (props) => {
   const [openDialog, setOpenDialog] = useState(false);
+  // Checks if all prerequisite modules has been passed
   const getPrerequiteStatus = () => {
     if (
       props.user.modulesPlaned.length > 0 &&

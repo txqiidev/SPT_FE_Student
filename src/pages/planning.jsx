@@ -41,12 +41,14 @@ const Home = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [hasPassed, setHasPassed] = React.useState(0);
 
+  // Executed when the component is rendered or changed, checks if modules has already been planned. if not the initalDialog will be opened
   useEffect(() => {
     if (!props.user.loading && props.user.plan.length === 0) {
       setOpenInitial(true);
     }
   }, []);
 
+  // Executed when an error while fetching occured
   useEffect(() => {
     props.user.error !== "" &&
       setAlert({
@@ -80,6 +82,7 @@ const Home = (props) => {
     }
   };
 
+  // If in the beginning a template is selected, this function will realize the template
   const onClickHandlerInitial = (value) => {
     if (value !== 3) {
       props.modules.forEach((m) => {

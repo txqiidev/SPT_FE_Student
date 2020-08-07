@@ -22,6 +22,7 @@ const ModuleGroupProgress = (props) => {
     severity: "",
   });
 
+  // if module hasPassed the value of it is 1
   const getHasPassedValue = (module) => {
     if (
       props.user.modulesPlaned.some((mp) => mp.idModule === module.idModule)
@@ -34,6 +35,7 @@ const ModuleGroupProgress = (props) => {
     }
   };
 
+  // Either flags module as passed or undo the flag
   const onClickHandlerPassModule = () => {
     setAnchorEl(null);
     props.hasPassed(props.user.email, currentModule, hasPassed === 0 ? 1 : 0);

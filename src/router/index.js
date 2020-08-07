@@ -38,6 +38,7 @@ const Routing = ({
 }) => {
   const [loading, setLoading] = useState(false);
 
+  // Executed when the component is rendered or changed, fetches all the data
   useEffect(() => {
     fetchStudyprogrammes();
     if (auth.getCurrentUser()) {
@@ -50,6 +51,7 @@ const Routing = ({
     }
   }, []);
 
+  // Removes the Loading Icon, if all the data has been fetched successfully
   useEffect(() => {
     if (
       !user.loading &&
@@ -61,6 +63,7 @@ const Routing = ({
     }
   }, [user.loading, modules.loading, moduleGroups.loading, locations.loading]);
 
+  // Checks which modules has been flagged as passed.
   useEffect(() => {
     let modulesPlaned = [];
     if (user.plan.length > 0) {

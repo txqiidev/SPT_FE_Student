@@ -22,11 +22,13 @@ const Modules = (props) => {
     severity: "",
   });
 
+  // Updates when the languages is changed
   useEffect(() => {
     setSelectedSemester(props.t("All"));
     setSelectedDisplayStyle(props.t("Listed"));
   }, [props.i18n.language]);
 
+  // Filters the data according to the semester
   const getTableData = () => {
     if (selectedSemester === props.t("Spring")) {
       return props.modules.filter((m) =>
@@ -41,6 +43,7 @@ const Modules = (props) => {
     }
   };
 
+  // Only applied during planning --> filters already planned modules
   const filterData = (data) => {
     return data.filter(
       (g) =>
@@ -58,6 +61,7 @@ const Modules = (props) => {
     return ects;
   };
 
+  // Clickhandler to save a module
   const onClickHandler = (module) => {
     props.savePlan(props.user.email, props.idSemester, module.idModule);
     setAlert({
@@ -77,6 +81,7 @@ const Modules = (props) => {
   return (
     <div style={styles.root}>
       <div style={styles.header}>
+        {/* Rendering the corresponding components (Header) according to the selected view */}
         {selectedDisplayStyle === props.t("Dependencies") ? (
           <FormControl style={{ width: 400 }}>
             <InputLabel>{props.t("MWD")}</InputLabel>
@@ -118,6 +123,9 @@ const Modules = (props) => {
           selected={selectedDisplayStyle}
         ></ButtonGroup>
       </div>
+
+      {/* Rendering the corresponding components (body) according to the selected view */}
+
       {selectedDisplayStyle === props.t("Listed") ? (
         <Table
           modules={props.planning ? filterData(getTableData()) : getTableData()}
@@ -150,8 +158,6 @@ const Modules = (props) => {
       ) : (
         selectedDisplayStyle === props.t("Dependencies") && (
           <KnowledgeGraph selectedModule={selectedModule}></KnowledgeGraph>
-
-          // <KnowledgeGraph></KnowledgeGraph>
         )
       )}
       <Alert

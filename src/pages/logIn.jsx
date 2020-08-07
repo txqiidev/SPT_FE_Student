@@ -23,6 +23,7 @@ const SignIn = (props) => {
   });
   const classes = useStyles();
 
+  // Performing the login
   const doSubmit = async () => {
     try {
       await auth.login(email, password);
@@ -38,6 +39,7 @@ const SignIn = (props) => {
     }
   };
 
+  //Clickaway heandler for the displayed alert
   const handleClose = (reason) => {
     if (reason === "clickaway") {
       return;

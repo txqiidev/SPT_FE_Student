@@ -10,6 +10,7 @@ const NavBar = ({ user, history, t, i18n }) => {
     `/${window.location.pathname.split("/").pop()}`
   );
 
+  // handler to change the language --> stores chosen language in the local storage
   const changeLanguage = (lng) => {
     localStorage.setItem("language", lng);
     i18n.changeLanguage(lng);

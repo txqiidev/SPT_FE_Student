@@ -21,6 +21,7 @@ const register = async (
     studyprogramme: studyprogramme,
     isAdmin: 0,
   });
+  // stores token in the local storage of the browser
   localStorage.setItem(tokenKey, data);
 };
 
@@ -29,9 +30,11 @@ const login = async (email, password) => {
     email,
     password,
   });
+  // stores token in the local storage of the browser
   localStorage.setItem(tokenKey, data);
 };
 
+// removes token from the local storage of the browser
 const logout = () => {
   localStorage.removeItem(tokenKey);
   window.location = "/";

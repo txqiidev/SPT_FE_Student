@@ -34,6 +34,7 @@ const Registration = ({ studyprogramme, t }) => {
 
   const classes = useStyles();
 
+  // Performing the post request for the registration
   const doSubmit = async () => {
     try {
       await auth.register(

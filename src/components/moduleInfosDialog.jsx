@@ -21,6 +21,7 @@ const ModulesInfosDialog = ({
   addMode,
   t,
 }) => {
+  // HTML parses the fetched data (performing newlines, setting bullet points and tabs)
   const formatContent = (content) => {
     return content.split("\n").map((line, i) =>
       line.includes("&bull") ? (
